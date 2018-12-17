@@ -2,7 +2,9 @@ package com.nuaa.is.rootfreefirewall;
 
 import android.content.Intent;
 import android.net.VpnService;
+import android.os.IBinder;
 import android.os.ParcelFileDescriptor;
+import android.util.Log;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
@@ -23,7 +25,26 @@ public class VpnInterface extends VpnService {
     private JSONObject config;
 
     @Override
+    public IBinder onBind(Intent intent) {
+        Log.i("firewallDebug", "onBind");
+        return super.onBind(intent);
+    }
+
+    @Override
+    public void onCreate() {
+        Log.i("firewallDebug", "onCreate");
+        super.onCreate();
+    }
+
+    @Override
+    public void onDestroy() {
+        Log.i("firewallDebug", "onDestroy");
+        super.onDestroy();
+    }
+
+    @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        Log.i("firewallDebug", "onStartCommand");
         // 初始化配置
         this.loadConfig();
 

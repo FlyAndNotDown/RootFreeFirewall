@@ -63,7 +63,10 @@ public class MainActivity extends AppCompatActivity {
                 closeFirewallButton.setEnabled(false);
                 // 启用开启防火墙按钮
                 startFirewallButton.setEnabled(true);
-                // TODO 真正关闭VpnService
+                // 真正关闭VpnService
+                Intent intent = new Intent();
+                intent.setAction(getString(R.string.broadcast__vpn_interface_stop));
+                sendBroadcast(intent);
             }
         });
     }
@@ -89,9 +92,8 @@ public class MainActivity extends AppCompatActivity {
         // 如果是启动VpnInterface的请求
         if (requestCode == REQUEST_CODE__VPN_INTERFACE) {
             if (resultCode == RESULT_OK) {
-                Intent intent = new Intent(this, VpnInterface.class);
                 // 开启服务
-                startService(intent);
+                startService(new Intent(this, VpnInterface.class));
             } else {
                 // 禁用关闭防火墙按钮
                 closeFirewallButton.setEnabled(false);
