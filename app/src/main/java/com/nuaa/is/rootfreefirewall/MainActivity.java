@@ -5,6 +5,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.content.Intent;
 import android.net.VpnService;
+import android.view.View;
+import android.widget.Button;
 
 /**
  * MainActivity
@@ -17,10 +19,53 @@ public class MainActivity extends AppCompatActivity {
     // VpnInterface请求码
     private static final int REQUEST_CODE__VPN_INTERFACE = 678;
 
+    // UI组件
+    private Button startFirewallButton;
+    private Button closeFirewallButton;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // 获取UI组件
+        this.getUIComponent();
+        // 添加组件监听事件
+        this.addComponentListener();
+    }
+
+    // 获取UI组件函数
+    private void getUIComponent() {
+        this.startFirewallButton = findViewById(R.id.startFirewallButton);
+        this.closeFirewallButton = findViewById(R.id.closeFirewallButton);
+    }
+
+    // 添加组件监听事件函数
+    private void addComponentListener() {
+        // 开启防火墙监听事件
+        this.startFirewallButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // 准备VpnService
+                prepareVpnService();
+                // 暂时禁用启动防火墙按钮
+                startFirewallButton.setEnabled(false);
+                // 启用关闭防火墙按钮
+                closeFirewallButton.setEnabled(true);
+            }
+        });
+
+        // 关闭防火墙监听事件
+        this.closeFirewallButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // 禁用关闭防火墙按钮
+                closeFirewallButton.setEnabled(false);
+                // 启用开启防火墙按钮
+                startFirewallButton.setEnabled(true);
+                // TODO 真正关闭VpnService
+            }
+        });
     }
 
     // 准备VpnService函数
@@ -42,10 +87,17 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         // 如果是启动VpnInterface的请求
-        if (requestCode == REQUEST_CODE__VPN_INTERFACE && resultCode == RESULT_OK) {
-            Intent intent = new Intent(this, VpnInterface.class);
-            // 开启服务
-            startService(intent);
+        if (requestCode == REQUEST_CODE__VPN_INTERFACE) {
+            if (resultCode == RESULT_OK) {
+                Intent intent = new Intent(this, VpnInterface.class);
+                // 开启服务
+                startService(intent);
+            } else {
+                // 禁用关闭防火墙按钮
+                closeFirewallButton.setEnabled(false);
+                // 启用开启防火墙按钮
+                startFirewallButton.setEnabled(true);
+            }
         }
     }
 }
