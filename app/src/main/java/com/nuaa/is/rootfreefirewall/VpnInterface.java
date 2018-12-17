@@ -31,7 +31,14 @@ public class VpnInterface extends VpnService {
         Builder builder = new Builder();
 
         // 添加参数
-        // TODO
+        builder.addAddress(
+                config.getString("address"),
+                config.getInteger("addressPrefixLength")
+        );
+        builder.addRoute(
+                config.getString("routeAddress"),
+                config.getInteger("routeAddressPrefixLength")
+        );
 
         // 建立连接
         this.vpnFileDescriptor = builder.establish();
