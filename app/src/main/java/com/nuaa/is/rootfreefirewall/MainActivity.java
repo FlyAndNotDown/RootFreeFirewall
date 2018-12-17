@@ -37,7 +37,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    // Activity返回结果处理函数
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

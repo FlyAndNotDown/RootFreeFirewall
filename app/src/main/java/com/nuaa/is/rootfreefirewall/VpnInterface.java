@@ -4,6 +4,11 @@ import android.content.Intent;
 import android.net.VpnService;
 import android.os.ParcelFileDescriptor;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+
+import org.apache.commons.io.IOUtils;
+
 /**
  * VpnInterface
  * 继承自VpnService的Vpn服务类
@@ -14,6 +19,7 @@ public class VpnInterface extends VpnService {
 
     // Vpn文件描述符
     private ParcelFileDescriptor vpnFileDescriptor;
+    private JSONObject config;
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -28,4 +34,16 @@ public class VpnInterface extends VpnService {
 
         return super.onStartCommand(intent, flags, startId);
     }
+
+    private void loadConfig() {
+        // 获取资源文件
+        String configString = "{}";
+        try {
+            configString = IOUtils.toString(getAssets().open("config/vpn-interface.json"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        this.config = JSON.parseObject(configString);
+    }
+
 }
