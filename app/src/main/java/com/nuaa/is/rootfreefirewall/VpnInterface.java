@@ -19,10 +19,14 @@ public class VpnInterface extends VpnService {
 
     // Vpn文件描述符
     private ParcelFileDescriptor vpnFileDescriptor;
+    // 配置json对象
     private JSONObject config;
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        // 初始化配置
+        this.loadConfig();
+
         // 创建一个构造器
         Builder builder = new Builder();
 
