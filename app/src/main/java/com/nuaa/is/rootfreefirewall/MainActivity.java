@@ -1,10 +1,14 @@
 package com.nuaa.is.rootfreefirewall;
 
+import android.content.ComponentName;
+import android.content.ServiceConnection;
+import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.content.Intent;
 import android.net.VpnService;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
@@ -16,8 +20,34 @@ import android.widget.Button;
  */
 public class MainActivity extends AppCompatActivity {
 
+    // VpnInterfaceService
+    private VpnInterface vpnInterface;
+    // 服务是否已经 bind
+    private boolean vpnInterfaceIsBound;
+
+    private class VpnInterfaceServiceConnection implements ServiceConnection {
+
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            Log.i("firewallDebug", "VpnInterfaceConnection-connected");
+            VpnInterface.VpnInterfaceBinder vpnInterfaceBinder = (VpnInterface.VpnInterfaceBinder) service;
+            vpnInterface = vpnInterfaceBinder.getService();
+            vpnInterfaceIsBound = true;
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            Log.i("firewallDebug", "VpnInterfaceConnection-disconnected");
+            vpnInterfaceIsBound = false;
+        }
+
+    }
+
     // VpnInterface请求码
     private static final int REQUEST_CODE__VPN_INTERFACE = 678;
+
+    // 服务连接
+    private VpnInterfaceServiceConnection vpnInterfaceServiceConnection;
 
     // UI组件
     private Button startFirewallButton;
@@ -32,6 +62,8 @@ public class MainActivity extends AppCompatActivity {
         this.getUIComponent();
         // 添加组件监听事件
         this.addComponentListener();
+
+        this.vpnInterfaceIsBound = false;
     }
 
     // 获取UI组件函数
@@ -64,9 +96,14 @@ public class MainActivity extends AppCompatActivity {
                 // 启用开启防火墙按钮
                 startFirewallButton.setEnabled(true);
                 // 真正关闭VpnService
-                Intent intent = new Intent();
-                intent.setAction(getString(R.string.broadcast__vpn_interface_stop));
-                sendBroadcast(intent);
+                if (vpnInterfaceIsBound) {
+                    try {
+                        unbindService(vpnInterfaceServiceConnection);
+                    } catch (Exception e) {
+                        Log.e("firewallDebug", "vpnInterfaceServiceConnection-can't unbind");
+                        e.printStackTrace();
+                    }
+                }
             }
         });
     }
@@ -93,7 +130,9 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == REQUEST_CODE__VPN_INTERFACE) {
             if (resultCode == RESULT_OK) {
                 // 开启服务
-                startService(new Intent(this, VpnInterface.class));
+                Intent intent = new Intent(this, VpnInterface.class);
+                this.vpnInterfaceServiceConnection = new VpnInterfaceServiceConnection();
+                bindService(intent, vpnInterfaceServiceConnection, BIND_AUTO_CREATE);
             } else {
                 // 禁用关闭防火墙按钮
                 closeFirewallButton.setEnabled(false);

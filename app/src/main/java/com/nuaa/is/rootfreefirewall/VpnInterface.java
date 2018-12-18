@@ -1,7 +1,11 @@
 package com.nuaa.is.rootfreefirewall;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.net.VpnService;
+import android.os.Binder;
 import android.os.IBinder;
 import android.os.ParcelFileDescriptor;
 import android.util.Log;
@@ -19,6 +23,17 @@ import org.apache.commons.io.IOUtils;
  */
 public class VpnInterface extends VpnService {
 
+    public class VpnInterfaceBinder extends Binder {
+
+        public VpnInterface getService() {
+            return VpnInterface.this;
+        }
+
+    }
+
+    // binder
+    private VpnInterfaceBinder vpnInterfaceBinder;
+
     // Vpn文件描述符
     private ParcelFileDescriptor vpnFileDescriptor;
     // 配置json对象
@@ -26,25 +41,8 @@ public class VpnInterface extends VpnService {
 
     @Override
     public IBinder onBind(Intent intent) {
-        Log.i("firewallDebug", "onBind");
-        return super.onBind(intent);
-    }
+        super.onBind(intent);
 
-    @Override
-    public void onCreate() {
-        Log.i("firewallDebug", "onCreate");
-        super.onCreate();
-    }
-
-    @Override
-    public void onDestroy() {
-        Log.i("firewallDebug", "onDestroy");
-        super.onDestroy();
-    }
-
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.i("firewallDebug", "onStartCommand");
         // 初始化配置
         this.loadConfig();
 
@@ -64,7 +62,9 @@ public class VpnInterface extends VpnService {
         // 建立连接
         this.vpnFileDescriptor = builder.establish();
 
-        return super.onStartCommand(intent, flags, startId);
+        this.vpnInterfaceBinder = new VpnInterfaceBinder();
+
+        return this.vpnInterfaceBinder;
     }
 
     private void loadConfig() {
