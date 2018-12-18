@@ -23,26 +23,13 @@ import org.apache.commons.io.IOUtils;
  */
 public class VpnInterface extends VpnService {
 
-    public class VpnInterfaceBinder extends Binder {
-
-        public VpnInterface getService() {
-            return VpnInterface.this;
-        }
-
-    }
-
-    // binder
-    private VpnInterfaceBinder vpnInterfaceBinder;
-
     // Vpn文件描述符
     private ParcelFileDescriptor vpnFileDescriptor;
     // 配置json对象
     private JSONObject config;
 
     @Override
-    public IBinder onBind(Intent intent) {
-        super.onBind(intent);
-
+    public int onStartCommand(Intent intent, int flags, int startId) {
         // 初始化配置
         this.loadConfig();
 
@@ -62,9 +49,7 @@ public class VpnInterface extends VpnService {
         // 建立连接
         this.vpnFileDescriptor = builder.establish();
 
-        this.vpnInterfaceBinder = new VpnInterfaceBinder();
-
-        return this.vpnInterfaceBinder;
+        return super.onStartCommand(intent, flags, startId);
     }
 
     private void loadConfig() {
