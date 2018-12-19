@@ -3,11 +3,19 @@ package com.nuaa.is.rootfreefirewall;
 import android.content.Intent;
 import android.net.VpnService;
 import android.os.ParcelFileDescriptor;
+import android.util.Log;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 
 import org.apache.commons.io.IOUtils;
+
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
+import java.nio.charset.Charset;
+import java.nio.charset.CharsetDecoder;
 
 /**
  * VpnInterface
@@ -17,8 +25,10 @@ import org.apache.commons.io.IOUtils;
  */
 public class VpnInterface extends VpnService {
 
+    private static final int BYTE_BUFFER_SIZE = 32767;
+
     // Vpn文件描述符
-    private ParcelFileDescriptor vpnFileDescriptor;
+    private ParcelFileDescriptor vpnParcelFileDescriptor;
     // 配置json对象
     private JSONObject config;
 
@@ -41,7 +51,34 @@ public class VpnInterface extends VpnService {
         );
 
         // 建立连接
-        this.vpnFileDescriptor = builder.establish();
+        this.vpnParcelFileDescriptor = builder.establish();
+
+        // 创建线程进行抓包
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                // 创建输入输出流
+                FileInputStream fileInputStream = new FileInputStream(vpnParcelFileDescriptor.getFileDescriptor());
+                FileOutputStream fileOutputStream = new FileOutputStream(vpnParcelFileDescriptor.getFileDescriptor());
+
+                // buffer
+                ByteBuffer buffer = ByteBuffer.allocate(BYTE_BUFFER_SIZE);
+
+                // 不断读取数据包
+                int length = 0;
+                while (true) {
+                    try {
+                        length = fileInputStream.read(buffer.array());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+                    if (length > 0) {
+                        Log.i("firewallDebug", "get a new packet, length: " + length + "\n" + buffer.toString());
+                    }
+                }
+            }
+        }).start();
 
         return super.onStartCommand(intent, flags, startId);
     }
