@@ -13,9 +13,6 @@ import org.apache.commons.io.IOUtils;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.nio.ByteBuffer;
-import java.nio.CharBuffer;
-import java.nio.charset.Charset;
-import java.nio.charset.CharsetDecoder;
 
 /**
  * VpnInterface
@@ -67,6 +64,8 @@ public class VpnInterface extends VpnService {
                 // 不断读取数据包
                 int length = 0;
                 while (true) {
+                    buffer.clear();
+
                     try {
                         length = fileInputStream.read(buffer.array());
                     } catch (Exception e) {
@@ -75,6 +74,11 @@ public class VpnInterface extends VpnService {
 
                     if (length > 0) {
                         Log.i("firewallDebug", "get a new packet, length: " + length + "\n" + buffer.toString());
+                        try {
+                            fileOutputStream.write(buffer.array(), 0, length);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
             }
