@@ -7,6 +7,7 @@ import android.util.Log;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.nuaa.is.rootfreefirewall.model.IpPacket;
 
 import org.apache.commons.io.IOUtils;
 
@@ -75,18 +76,24 @@ public class VpnInterface extends VpnService {
                     }
 
                     if (length > 0) {
-                        String string = "";
-                        int i = 0;
-                        while (i < buffer.array().length) {
-                            string += buffer.array()[i++] + " ";
-                        }
-                        Log.i("firewallDebug", "get a new packet, length: " + length + "\n" + string);
-                        try {
-                            fileOutputStream.write(buffer.array(), 0, length);
-                        } catch (Exception e) {
-                            Log.i("firewallDebug", "Can't write packet to output stream");
-                            e.printStackTrace();
-                        }
+                        IpPacket ipPacket = new IpPacket(buffer, length);
+                        Log.i(
+                                "firewallDebug",
+                                String.format(
+                                        "get a IP packet: \n" +
+                                                "\tversion: %d\theaderLength: %d\ttotalLength: %d\n" +
+                                                "\toffset: %d\tttl: %d\tprotocol: %s\n" +
+                                                "\tsourceIpAddress: %s\t destIpAddress: %s\n",
+                                        ipPacket.getVersion(),
+                                        ipPacket.getHeaderLength(),
+                                        ipPacket.getTotalLength(),
+                                        ipPacket.getOffset(),
+                                        ipPacket.getTtl(),
+                                        ipPacket.getProtocol(),
+                                        ipPacket.getSourceIpAddress(),
+                                        ipPacket.getDestIpAddress()
+                                )
+                        );
                     }
                 }
             }

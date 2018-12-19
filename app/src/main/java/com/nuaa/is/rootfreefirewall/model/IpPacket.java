@@ -141,7 +141,7 @@ public class IpPacket {
         // 源地址
         this.sourceIpAddress = "";
         for (int i = 0; i < 4; i++) {
-            int temp = this.bytes[12 + i];
+            int temp = this.bytes[12 + i] & 0xff;
             sourceIpAddress += temp;
             if (i != 3) sourceIpAddress += ".";
         }
@@ -149,7 +149,7 @@ public class IpPacket {
         // 目的地址
         this.destIpAddress = "";
         for (int i = 0; i < 4; i++) {
-            int temp = this.bytes[16 + i];
+            int temp = this.bytes[16 + i] & 0xff;
             destIpAddress += temp;
             if (i != 3) destIpAddress += ".";
         }
