@@ -8,6 +8,7 @@ import android.util.Log;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.nuaa.is.rootfreefirewall.model.IpPacket;
+import com.nuaa.is.rootfreefirewall.model.TcpPacket;
 
 import org.apache.commons.io.IOUtils;
 
@@ -81,6 +82,17 @@ public class VpnInterface extends VpnService {
                         IpPacket ipPacket = new IpPacket(buffer, length);
                         // 打印信息
                         ipPacket.printMainInfo();
+
+                        // 根据协议分情况讨论
+                        switch (ipPacket.getProtocol()) {
+                            default:
+                                continue;
+                            case "TCP":
+                                // 拆包
+                                TcpPacket tcpPacket = new TcpPacket(ipPacket.getData());
+                                // 打印信息
+                                tcpPacket.printMainInfo();
+                        }
                     }
                 }
             }
