@@ -168,7 +168,7 @@ public class TcpPacket {
             temp = this.bytes[i++];
             all += temp + " ";
             if (i % 4 == 0) all += "\t";
-            if (i % 8 == 0) all += "\t";
+            if (i % 8 == 0) all += "\n";
         }
 
         Log.i(

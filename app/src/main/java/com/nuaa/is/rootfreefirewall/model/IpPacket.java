@@ -157,9 +157,9 @@ public class IpPacket {
         }
 
         // 数据区
-        if (totalLength > headerLength) {
-            this.data = new byte[totalLength - headerLength];
-            for (int i = headerLength; i < totalLength; i++) {
+        if (this.bytes.length > headerLength) {
+            this.data = new byte[this.bytes.length - headerLength];
+            for (int i = headerLength; i < this.bytes.length; i++) {
                 this.data[i - headerLength] = this.bytes[i];
             }
         } else {
@@ -231,7 +231,7 @@ public class IpPacket {
             temp = this.bytes[i++];
             all += temp + " ";
             if (i % 4 == 0) all += "\t";
-            if (i % 8 == 0) all += "\t";
+            if (i % 8 == 0) all += "\n";
         }
         // 日志信息
         Log.i(
