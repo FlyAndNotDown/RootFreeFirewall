@@ -79,25 +79,8 @@ public class VpnInterface extends VpnService {
                     if (length > 0) {
                         // 拆包
                         IpPacket ipPacket = new IpPacket(buffer, length);
-
-                        // 日志信息
-                        Log.i(
-                                "firewallDebug",
-                                String.format(
-                                        "get a IP packet: \n" +
-                                                "\tversion: %d\theaderLength: %d\ttotalLength: %d\n" +
-                                                "\toffset: %d\tttl: %d\tprotocol: %s\n" +
-                                                "\tsourceIpAddress: %s\t destIpAddress: %s\n",
-                                        ipPacket.getVersion(),
-                                        ipPacket.getHeaderLength(),
-                                        ipPacket.getTotalLength(),
-                                        ipPacket.getOffset(),
-                                        ipPacket.getTtl(),
-                                        ipPacket.getProtocol(),
-                                        ipPacket.getSourceIpAddress(),
-                                        ipPacket.getDestIpAddress()
-                                )
-                        );
+                        // 打印信息
+                        ipPacket.printMainInfo();
                     }
                 }
             }

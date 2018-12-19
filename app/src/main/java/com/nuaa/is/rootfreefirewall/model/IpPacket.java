@@ -1,5 +1,7 @@
 package com.nuaa.is.rootfreefirewall.model;
 
+import android.util.Log;
+
 import java.nio.ByteBuffer;
 
 /**
@@ -219,5 +221,27 @@ public class IpPacket {
 
     public byte[] getData() {
         return data;
+    }
+
+    // 打印关键信息
+    public void printMainInfo() {
+        // 日志信息
+        Log.i(
+                "firewallDebug",
+                String.format(
+                        "get a IP packet: \n" +
+                                "\tversion: %d\theaderLength: %d\ttotalLength: %d\n" +
+                                "\toffset: %d\tttl: %d\tprotocol: %s\n" +
+                                "\tsourceIpAddress: %s\t destIpAddress: %s\n",
+                        this.getVersion(),
+                        this.getHeaderLength(),
+                        this.getTotalLength(),
+                        this.getOffset(),
+                        this.getTtl(),
+                        this.getProtocol(),
+                        this.getSourceIpAddress(),
+                        this.getDestIpAddress()
+                )
+        );
     }
 }
