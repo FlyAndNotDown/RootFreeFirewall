@@ -133,7 +133,7 @@ public class IpPacket {
         this.ttl = this.bytes[8];
 
         // 上层协议
-        this.protocol = this.bytes[9] >= 0 && this.bytes[9] < PROTOCOL_VERTEX.length ?
+        this.protocol = this.bytes[9] >= 0 & this.bytes[9] < PROTOCOL_VERTEX.length ?
                 PROTOCOL_VERTEX[this.bytes[9]] :
                 "None";
 
@@ -225,6 +225,14 @@ public class IpPacket {
 
     // 打印关键信息
     public void printMainInfo() {
+        String all = "";
+        int temp;
+        for (int i = 0; i < this.bytes.length;) {
+            temp = this.bytes[i++];
+            all += temp + " ";
+            if (i % 4 == 0) all += "\t";
+            if (i % 8 == 0) all += "\t";
+        }
         // 日志信息
         Log.i(
                 "firewallDebug",
@@ -232,7 +240,8 @@ public class IpPacket {
                         "get a IP packet: \n" +
                                 "\tversion: %d\theaderLength: %d\ttotalLength: %d\n" +
                                 "\toffset: %d\tttl: %d\tprotocol: %s\n" +
-                                "\tsourceIpAddress: %s\t destIpAddress: %s\n",
+                                "\tsourceIpAddress: %s\t destIpAddress: %s\n" +
+                                "%s",
                         this.getVersion(),
                         this.getHeaderLength(),
                         this.getTotalLength(),
@@ -240,7 +249,8 @@ public class IpPacket {
                         this.getTtl(),
                         this.getProtocol(),
                         this.getSourceIpAddress(),
-                        this.getDestIpAddress()
+                        this.getDestIpAddress(),
+                        all
                 )
         );
     }
