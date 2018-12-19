@@ -22,7 +22,7 @@ import java.nio.ByteBuffer;
  */
 public class VpnInterface extends VpnService {
 
-    private static final int BYTE_BUFFER_SIZE = 32767;
+    private static final int BYTE_BUFFER_SIZE = 65535;
 
     // Vpn文件描述符
     private ParcelFileDescriptor vpnParcelFileDescriptor;
@@ -38,6 +38,7 @@ public class VpnInterface extends VpnService {
         Builder builder = new Builder();
 
         // 添加参数
+        builder.setSession(getString(R.string.app_name));
         builder.addAddress(
                 config.getString("address"),
                 config.getInteger("addressPrefixLength")
@@ -62,8 +63,9 @@ public class VpnInterface extends VpnService {
                 ByteBuffer buffer = ByteBuffer.allocate(BYTE_BUFFER_SIZE);
 
                 // 不断读取数据包
-                int length = 0;
+                int length;
                 while (true) {
+                    length = 0;
                     buffer.clear();
 
                     try {
@@ -73,10 +75,16 @@ public class VpnInterface extends VpnService {
                     }
 
                     if (length > 0) {
-                        Log.i("firewallDebug", "get a new packet, length: " + length + "\n" + buffer.toString());
+                        String string = "";
+                        int i = 0;
+                        while (i < buffer.array().length) {
+                            string += buffer.array()[i++] + " ";
+                        }
+                        Log.i("firewallDebug", "get a new packet, length: " + length + "\n" + string);
                         try {
                             fileOutputStream.write(buffer.array(), 0, length);
                         } catch (Exception e) {
+                            Log.i("firewallDebug", "Can't write packet to output stream");
                             e.printStackTrace();
                         }
                     }
