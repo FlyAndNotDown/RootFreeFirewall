@@ -40,6 +40,7 @@ public class VpnInterface extends VpnService {
 
         // 添加参数
         builder.setSession(getString(R.string.app_name));
+        builder.setBlocking(false);
         builder.addAddress(
                 config.getString("address"),
                 config.getInteger("addressPrefixLength")
@@ -76,7 +77,10 @@ public class VpnInterface extends VpnService {
                     }
 
                     if (length > 0) {
+                        // 拆包
                         IpPacket ipPacket = new IpPacket(buffer, length);
+
+                        // 日志信息
                         Log.i(
                                 "firewallDebug",
                                 String.format(
