@@ -228,7 +228,7 @@ public class IpPacket {
         String all = "";
         int temp;
         for (int i = 0; i < this.bytes.length;) {
-            temp = this.bytes[i++];
+            temp = this.bytes[i++] & 0xff;
             all += temp + " ";
             if (i % 4 == 0) all += "\t";
             if (i % 8 == 0) all += "\n";
