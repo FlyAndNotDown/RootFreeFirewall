@@ -28,14 +28,13 @@ public class ByteBufferPool
     {
         ByteBuffer buffer = pool.poll();
         if (buffer == null)
-            buffer = ByteBuffer.allocateDirect(BUFFER_SIZE);
+            buffer = ByteBuffer.allocate(BUFFER_SIZE);
         return buffer;
     }
 
     public static void release(ByteBuffer buffer)
     {
         buffer.clear();
-        pool.offer(buffer);
     }
 
     public static void clear()

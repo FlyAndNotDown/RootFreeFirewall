@@ -42,6 +42,7 @@ public class FirewallVpnService extends VpnService {
     private static final int VPN_ADDRESS_MASK = 32;
     private static final String VPN_ROUTE = "0.0.0.0";
     private static final int VPN_ROUTE_MASK = 0;
+    private static final int VPN_MTU = 1500;
 
     // 广播 Vpn 状态
     public static final String BROADCAST_VPN_STATE = "com.nuaa.is.VPN_STATE";
@@ -76,6 +77,7 @@ public class FirewallVpnService extends VpnService {
             builder.setSession(getString(R.string.app_name));
             builder.addAddress(VPN_ADDRESS, VPN_ADDRESS_MASK);
             builder.addRoute(VPN_ROUTE, VPN_ROUTE_MASK);
+            builder.setMtu(VPN_MTU);
             this.parcelFileDescriptor = builder.establish();
         }
 
