@@ -74,7 +74,7 @@ public class FirewallVpnService extends VpnService {
             Builder builder = new Builder();
             builder.setSession(getString(R.string.app_name));
             builder.addAddress(VPN_ADDRESS, VPN_ADDRESS_MASK);
-            builder.addAddress(VPN_ROUTE, VPN_ROUTE_MASK);
+            builder.addRoute(VPN_ROUTE, VPN_ROUTE_MASK);
             this.parcelFileDescriptor = builder.establish();
         }
 
