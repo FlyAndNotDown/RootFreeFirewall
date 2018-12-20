@@ -22,14 +22,25 @@ public class TCBPool {
     }
 
     // 通过 ipAddress 和 port 获取 key
-    private static String getKeyByIpAndPort(String ipAddress, int port) {
-        String key = ipAddress + ":" + port;
+    private static String getKeyByIpAndPort(
+            String sourceIpAddress,
+            int sourcePort,
+            String destIpAddress,
+            int destPort
+    ) {
+        String key = sourceIpAddress + ":" + sourcePort + "-" + destIpAddress + ":" + destPort;
         return key;
     }
 
     // 存储 TCB
-    public static void putTCB(String ipAddress, int port, TCB tcb) {
-        String key = TCBPool.getKeyByIpAndPort(ipAddress, port);
+    public static void putTCB(
+            String sourceIpAddress,
+            int sourcePort,
+            String destIpAddress,
+            int destPort,
+            TCB tcb
+    ) {
+        String key = TCBPool.getKeyByIpAndPort(sourceIpAddress, sourcePort, destIpAddress, destPort);
         if (key.isEmpty() || tcb == null) {
             return;
         }
@@ -37,23 +48,34 @@ public class TCBPool {
     }
 
     // 获取 TCB
-    public static TCB getTCB(String ipAddress, int port) {
-        String key = TCBPool.getKeyByIpAndPort(ipAddress, port);
+    public static TCB getTCB(
+            String sourceIpAddress,
+            int sourcePort,
+            String destIpAddress,
+            int destPort
+    ) {
+        String key = TCBPool.getKeyByIpAndPort(sourceIpAddress, sourcePort, destIpAddress, destPort);
         return tcbPool.get(key);
     }
 
     // 关闭 TCB
-    public static void closeTCB(String ipAddress, int port) {
+    public static void closeTCB(
+            String sourceIpAddress,
+            int sourcePort,
+            String destIpAddress,
+            int destPort
+    ) {
+        String key = TCBPool.getKeyByIpAndPort(sourceIpAddress, sourcePort, destIpAddress, destPort);
         try {
             tcbPool
-                    .get(TCBPool.getKeyByIpAndPort(ipAddress, port))
+                    .get(key)
                     .getSelectionKey()
                     .channel()
                     .close();
         } catch (Exception e) {
             e.printStackTrace();
         }
-        tcbPool.remove(ipAddress, port);
+        tcbPool.remove(key);
     }
 
     // 关闭所有 TCB

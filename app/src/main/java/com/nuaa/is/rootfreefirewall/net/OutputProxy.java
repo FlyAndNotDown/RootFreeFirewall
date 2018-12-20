@@ -3,6 +3,7 @@ package com.nuaa.is.rootfreefirewall.net;
 import android.net.VpnService;
 
 import com.nuaa.is.rootfreefirewall.model.IpPacket;
+import com.nuaa.is.rootfreefirewall.model.TCB;
 import com.nuaa.is.rootfreefirewall.model.TcpPacket;
 
 import java.nio.ByteBuffer;
