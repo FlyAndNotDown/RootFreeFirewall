@@ -63,6 +63,7 @@ public class VpnInterface extends VpnService {
 
                 // buffer
                 ByteBuffer buffer = ByteBuffer.allocate(BYTE_BUFFER_SIZE);
+                ByteBuffer readBuffer = ByteBuffer.allocate(BYTE_BUFFER_SIZE);
 
                 // 不断读取数据包
                 int length;
