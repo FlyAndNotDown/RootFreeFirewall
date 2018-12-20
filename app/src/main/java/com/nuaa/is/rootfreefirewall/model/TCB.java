@@ -1,5 +1,7 @@
 package com.nuaa.is.rootfreefirewall.model;
 
+import java.nio.channels.SelectionKey;
+
 /**
  * Transport Control Block 传输控制块
  * @author John Kindem
@@ -32,6 +34,9 @@ public class TCB {
     // TCP 状态信息
     private int tcpStatus;
 
+    // selectionKey
+    private SelectionKey selectionKey;
+
     public TCB(
             String ipAddress,
             int port,
@@ -39,7 +44,8 @@ public class TCB {
             long serial,
             long serverSerial,
             long confirm,
-            long serverConfirm
+            long serverConfirm,
+            SelectionKey selectionKey
     ) {
         this.ipAddress = ipAddress;
         this.port = port;
@@ -50,6 +56,8 @@ public class TCB {
         this.serverConfirm = serverConfirm;
 
         this.tcpStatus = 0;
+
+        this.selectionKey = selectionKey;
     }
 
     // 记录流量
@@ -119,5 +127,13 @@ public class TCB {
 
     public void setTcpStatus(int tcpStatus) {
         this.tcpStatus = tcpStatus;
+    }
+
+    public SelectionKey getSelectionKey() {
+        return selectionKey;
+    }
+
+    public void setSelectionKey(SelectionKey selectionKey) {
+        this.selectionKey = selectionKey;
     }
 }
