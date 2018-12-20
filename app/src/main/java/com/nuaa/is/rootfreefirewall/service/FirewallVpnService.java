@@ -250,9 +250,7 @@ public class FirewallVpnService extends VpnService {
                         // 准备读取
                         bufferFromNetwork.flip();
                         // 将数据一股脑写回物理网卡
-                        while (bufferFromNetwork.hasRemaining()) {
-                            vpnOutput.write(bufferFromNetwork);
-                        }
+                        vpnOutput.write(bufferFromNetwork);
                         // 设置收到数据标识
                         dataReceived = true;
                         // 从缓冲池中释放缓冲区
