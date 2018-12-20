@@ -54,9 +54,9 @@ public class TcpPacket {
 
         // 开始解构
         // 源端口
-        this.sourcePort = (this.bytes[0] << 8) + this.bytes[1];
+        this.sourcePort = ((this.bytes[0] & 0xff) << 8) + this.bytes[1];
         // 目的端口
-        this.destPort = (this.bytes[2] << 8) + this.bytes[3];
+        this.destPort = ((this.bytes[2] & 0xff) << 8) + this.bytes[3];
         // 序号
         this.serial = (this.bytes[4] << 24) + (this.bytes[5] << 16) +
                 (this.bytes[6] << 8) + this.bytes[7];
