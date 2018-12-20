@@ -260,7 +260,7 @@ public class FirewallVpnService extends VpnService {
                     }
 
                     // 无收也无发，则让线程睡一会
-                    if (!dataSent && dataReceived) {
+                    if (!dataSent && !dataReceived) {
                         Thread.sleep(10);
                     }
                 }
