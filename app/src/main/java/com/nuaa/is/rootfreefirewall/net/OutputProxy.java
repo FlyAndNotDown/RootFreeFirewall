@@ -17,6 +17,9 @@ import java.util.concurrent.BlockingQueue;
  */
 public class OutputProxy extends Thread {
 
+    // BUFFER_SIZE
+    private static final int BUFFER_SIZE = 65535;
+
     // 运行中状态标识
     private volatile boolean running = false;
 
@@ -71,9 +74,30 @@ public class OutputProxy extends Thread {
             // 如果是 tcp
             switch (ipPacket.getProtocol()) {
                 case "TCP":
+                    // 创建响应缓冲区
+                    ByteBuffer responseBuffer = ByteBuffer.allocate(BUFFER_SIZE);
+
                     // 拆包
                     TcpPacket tcpPacket = new TcpPacket(ipPacket.getData());
-                    // TODO
+
+                    // 获取目的地址、源端口、目的端口
+                    String destIpAddress = ipPacket.getDestIpAddress();
+                    int sourcePort = tcpPacket.getSourcePort();
+                    int destPort = tcpPacket.getDestPort();
+
+                    // 尝试获取 TCB
+                    TCB tcb = TCBPool.getTCB(destIpAddress, sourcePort, destPort);
+
+                    // 如果没能获取到 TCB，说明 TCB 还没创建，尝试创建 TCB
+                    if (tcb == null) {
+                        initTCB(ipPacket, responseBuffer);
+                    } else if (tcpPacket.getSyn()) {
+                        dealDuplicateSYN(tcb, ipPacket, responseBuffer);
+                    } else if (tcpPacket.getFin()) {
+                        finishConnection(tcb, ipPacket, responseBuffer);
+                    } else if (tcpPacket.getAck()) {
+                        transportData(tcb, ipPacket, responseBuffer);
+                    }
                 case "UDP":
                     break;
                 default:
@@ -81,4 +105,40 @@ public class OutputProxy extends Thread {
             }
         }
     }
+
+    // 初始化 tcb
+    private void initTCB(
+            IpPacket ipPacket,
+            ByteBuffer responseBuffer
+    ) {
+        // TODO
+    }
+
+    // 处理重复的 SYN
+    private void dealDuplicateSYN(
+            TCB tcb,
+            IpPacket ipPacket,
+            ByteBuffer responseBuffer
+    ) {
+        // TODO
+    }
+
+    // 结束连接
+    private void finishConnection(
+            TCB tcb,
+            IpPacket ipPacket,
+            ByteBuffer responseBuffer
+    ) {
+        // TODO
+    }
+
+    // 传输数据
+    private void transportData(
+            TCB tcb,
+            IpPacket ipPacket,
+            ByteBuffer responseBuffer
+    ) {
+        // TODO
+    }
+
 }

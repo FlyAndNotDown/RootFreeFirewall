@@ -33,8 +33,8 @@ public class TCBPool {
 
     // 存储 TCB
     public static void putTCB(
-            int sourcePort,
             String destIpAddress,
+            int sourcePort,
             int destPort,
             TCB tcb
     ) {
@@ -47,8 +47,8 @@ public class TCBPool {
 
     // 获取 TCB
     public static TCB getTCB(
-            int sourcePort,
             String destIpAddress,
+            int sourcePort,
             int destPort
     ) {
         String key = TCBPool.getKeyByIpAndPort(destIpAddress, sourcePort, destPort);
@@ -57,8 +57,8 @@ public class TCBPool {
 
     // 关闭 TCB
     public static void closeTCB(
-            int sourcePort,
             String destIpAddress,
+            int sourcePort,
             int destPort
     ) {
         String key = TCBPool.getKeyByIpAndPort(destIpAddress, sourcePort, destPort);
