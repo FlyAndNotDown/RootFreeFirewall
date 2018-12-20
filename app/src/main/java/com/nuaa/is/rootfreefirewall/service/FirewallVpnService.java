@@ -46,8 +46,8 @@ public class FirewallVpnService extends VpnService {
     public static final String BROADCAST_VPN_STATE = "com.nuaa.is.VPN_STATE";
 
     // 运行状态
-    private static boolean isRunning = false;
-
+    private static boolean running = false;
+    
     // 文件描述符
     private ParcelFileDescriptor parcelFileDescriptor = null;
 
@@ -67,7 +67,7 @@ public class FirewallVpnService extends VpnService {
         super.onCreate();
 
         // 设置运行状态
-        FirewallVpnService.isRunning = true;
+        FirewallVpnService.running = true;
 
         // 建立 VPN 连接
         if (this.parcelFileDescriptor == null) {
@@ -128,7 +128,7 @@ public class FirewallVpnService extends VpnService {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        isRunning = false;
+        running = false;
         executorService.shutdownNow();
         clean();
         Log.i(FirewallVpnService.TAG, "FirewallVpnService Stopped");
@@ -278,4 +278,10 @@ public class FirewallVpnService extends VpnService {
         }
 
     }
+
+    // Getters
+    public static boolean isRunning() {
+        return running;
+    }
+
 }

@@ -1,8 +1,8 @@
 <resources>
     <string name="app_name">RootFreeFirewall</string>
 
-    <string name="main_activity__start_firewall_button__text">开启防火墙</string>
-    <string name="main_activity__close_firewall_button__text">关闭防火墙</string>
+    <string name="main_activity__start_firewall_button__enable__text">开启防火墙</string>
+    <string name="main_activity__start_firewall_button__disenable__text">退出应用以关闭防火墙</string>
     
     <string name="broadcast__vpn_interface_stop">BROADCAST__VPN_INTERFACE_STOP</string>
 </resources>
