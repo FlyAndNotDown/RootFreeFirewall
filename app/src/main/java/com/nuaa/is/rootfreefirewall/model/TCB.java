@@ -16,8 +16,6 @@ public class TCB {
     public static final int TCP_STATUS_ESTABLISHED = 3;
     public static final int TCP_STATUS_LAST_ACK = 4;
 
-    // 源地址
-    private String sourceIpAddress;
     // 源端口
     private int sourcePort;
     // 目的地址
@@ -42,7 +40,6 @@ public class TCB {
     private SelectionKey selectionKey;
 
     public TCB(
-            String sourceIpAddress,
             int sourcePort,
             String destIpAddress,
             int destPort,
@@ -53,7 +50,6 @@ public class TCB {
             long serverConfirm,
             SelectionKey selectionKey
     ) {
-        this.sourceIpAddress = sourceIpAddress;
         this.sourcePort = sourcePort;
         this.destIpAddress = destIpAddress;
         this.destPort = destPort;
@@ -127,14 +123,6 @@ public class TCB {
 
     public void setSelectionKey(SelectionKey selectionKey) {
         this.selectionKey = selectionKey;
-    }
-
-    public String getSourceIpAddress() {
-        return sourceIpAddress;
-    }
-
-    public void setSourceIpAddress(String sourceIpAddress) {
-        this.sourceIpAddress = sourceIpAddress;
     }
 
     public int getSourcePort() {

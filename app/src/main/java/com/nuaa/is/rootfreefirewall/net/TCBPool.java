@@ -23,24 +23,22 @@ public class TCBPool {
 
     // 通过 ipAddress 和 port 获取 key
     private static String getKeyByIpAndPort(
-            String sourceIpAddress,
-            int sourcePort,
             String destIpAddress,
+            int sourcePort,
             int destPort
     ) {
-        String key = sourceIpAddress + ":" + sourcePort + "-" + destIpAddress + ":" + destPort;
+        String key = sourcePort + "-" + destIpAddress + ":" + destPort;
         return key;
     }
 
     // 存储 TCB
     public static void putTCB(
-            String sourceIpAddress,
             int sourcePort,
             String destIpAddress,
             int destPort,
             TCB tcb
     ) {
-        String key = TCBPool.getKeyByIpAndPort(sourceIpAddress, sourcePort, destIpAddress, destPort);
+        String key = TCBPool.getKeyByIpAndPort(destIpAddress, sourcePort, destPort);
         if (key.isEmpty() || tcb == null) {
             return;
         }
@@ -49,23 +47,21 @@ public class TCBPool {
 
     // 获取 TCB
     public static TCB getTCB(
-            String sourceIpAddress,
             int sourcePort,
             String destIpAddress,
             int destPort
     ) {
-        String key = TCBPool.getKeyByIpAndPort(sourceIpAddress, sourcePort, destIpAddress, destPort);
+        String key = TCBPool.getKeyByIpAndPort(destIpAddress, sourcePort, destPort);
         return tcbPool.get(key);
     }
 
     // 关闭 TCB
     public static void closeTCB(
-            String sourceIpAddress,
             int sourcePort,
             String destIpAddress,
             int destPort
     ) {
-        String key = TCBPool.getKeyByIpAndPort(sourceIpAddress, sourcePort, destIpAddress, destPort);
+        String key = TCBPool.getKeyByIpAndPort(destIpAddress, sourcePort, destPort);
         try {
             tcbPool
                     .get(key)
