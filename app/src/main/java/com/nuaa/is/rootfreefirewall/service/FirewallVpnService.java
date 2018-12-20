@@ -247,7 +247,7 @@ public class FirewallVpnService extends VpnService {
                     if (bufferFromNetwork != null) {
                         // 准备读取
                         bufferFromNetwork.flip();
-                        // 将数据一股脑写回屋里网卡
+                        // 将数据一股脑写回物理网卡
                         while (bufferFromNetwork.hasRemaining()) {
                             vpnOutput.write(bufferFromNetwork);
                         }
