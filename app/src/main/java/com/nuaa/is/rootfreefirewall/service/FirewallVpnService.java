@@ -7,12 +7,14 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.nuaa.is.rootfreefirewall.R;
+import com.nuaa.is.rootfreefirewall.model.ByteBufferPool;
 import com.nuaa.is.rootfreefirewall.model.Packet;
 import com.nuaa.is.rootfreefirewall.net.TCPInput;
 import com.nuaa.is.rootfreefirewall.net.TCPOutput;
 import com.nuaa.is.rootfreefirewall.net.UDPInput;
 import com.nuaa.is.rootfreefirewall.net.UDPOutput;
 
+import java.io.Closeable;
 import java.io.FileDescriptor;
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -109,26 +111,77 @@ public class FirewallVpnService extends VpnService {
         } catch (IOException e) {
             e.printStackTrace();
             Log.e(FirewallVpnService.TAG, "Can't start FirewallVpnService");
+
+            // 清理
+            clean();
         }
     }
 
-    private void clean() {
-
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        return START_STICKY;
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        isRunning = false;
+        executorService.shutdownNow();
+        clean();
+        Log.i(FirewallVpnService.TAG, "FirewallVpnService Stopped");
+    }
+
+    // 清理函数
+    private void clean() {
+        this.deviceToNetworkUDPQueue = null;
+        this.deviceToNetworkTCPQueue = null;
+        this.networkToDeviceQueue = null;
+        ByteBufferPool.clear();
+        closeReousrce(udpSelector, tcpSelector, parcelFileDescriptor);
+    }
+
+    // 清理资源
+    private void closeReousrce(Closeable... resources) {
+        for (Closeable resource : resources) {
+            try {
+                resource.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+                Log.i(FirewallVpnService.TAG, "Clean resources failed");
+            }
+        }
+    }
+
+    // Vpn 服务线程
     public static class VPNRunnable implements Runnable {
+
+        private static final String TAG = "RFF-VpnThread";
+
+        // 文件描述符
+        private FileDescriptor fileDescriptor;
+
+        // 队列
+        private ConcurrentLinkedQueue<Packet> deviceToNetworkUDPQueue;
+        private ConcurrentLinkedQueue<Packet> deviceToNetworkTCPQueue;
+        private ConcurrentLinkedQueue<ByteBuffer> networkToDeviceQueue;
+
+        // 构造
         public VPNRunnable(
                 FileDescriptor fileDescriptor,
                 ConcurrentLinkedQueue<Packet> deviceToNetworkUDPQueue,
                 ConcurrentLinkedQueue<Packet> deviceToNetworkTCPQueue,
                 ConcurrentLinkedQueue<ByteBuffer> networkToDeviceQueue
         ) {
-
+            this.fileDescriptor = fileDescriptor;
+            this.deviceToNetworkUDPQueue = deviceToNetworkUDPQueue;
+            this.deviceToNetworkTCPQueue = deviceToNetworkTCPQueue;
+            this.networkToDeviceQueue = networkToDeviceQueue;
         }
 
         @Override
         public void run() {
-
+            // TODO
         }
+
     }
 }
