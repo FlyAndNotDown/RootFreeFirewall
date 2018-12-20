@@ -14,7 +14,7 @@
 ** limitations under the License.
 */
 
-package com.nuaa.is.rootfreefirewall.test;
+package com.nuaa.is.rootfreefirewall.model;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;

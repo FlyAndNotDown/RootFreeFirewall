@@ -14,8 +14,9 @@
 ** limitations under the License.
 */
 
-package com.nuaa.is.rootfreefirewall.test;
+package com.nuaa.is.rootfreefirewall.net;
 
+import android.net.VpnService;
 import android.util.Log;
 
 import java.io.IOException;
@@ -28,21 +29,24 @@ import java.nio.channels.SocketChannel;
 import java.util.Random;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import xyz.hexene.localvpn.Packet.TCPHeader;
-import xyz.hexene.localvpn.TCB.TCBStatus;
+import com.nuaa.is.rootfreefirewall.model.ByteBufferPool;
+import com.nuaa.is.rootfreefirewall.model.Packet;
+import com.nuaa.is.rootfreefirewall.model.TCB;
+import com.nuaa.is.rootfreefirewall.model.TCB.TCBStatus;
+import com.nuaa.is.rootfreefirewall.model.Packet.TCPHeader;
 
 public class TCPOutput implements Runnable
 {
     private static final String TAG = TCPOutput.class.getSimpleName();
 
-    private LocalVPNService vpnService;
+    private VpnService vpnService;
     private ConcurrentLinkedQueue<Packet> inputQueue;
     private ConcurrentLinkedQueue<ByteBuffer> outputQueue;
     private Selector selector;
 
     private Random random = new Random();
     public TCPOutput(ConcurrentLinkedQueue<Packet> inputQueue, ConcurrentLinkedQueue<ByteBuffer> outputQueue,
-                     Selector selector, LocalVPNService vpnService)
+                     Selector selector, VpnService vpnService)
     {
         this.inputQueue = inputQueue;
         this.outputQueue = outputQueue;

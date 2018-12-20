@@ -14,7 +14,7 @@
 ** limitations under the License.
 */
 
-package com.nuaa.is.rootfreefirewall.test;
+package com.nuaa.is.rootfreefirewall.net;
 
 import android.util.Log;
 
@@ -27,7 +27,10 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import xyz.hexene.localvpn.TCB.TCBStatus;
+import com.nuaa.is.rootfreefirewall.model.ByteBufferPool;
+import com.nuaa.is.rootfreefirewall.model.Packet;
+import com.nuaa.is.rootfreefirewall.model.TCB;
+import com.nuaa.is.rootfreefirewall.model.TCB.TCBStatus;
 
 public class TCPInput implements Runnable
 {

@@ -18,7 +18,9 @@
         </activity>
         <!-- 服务声明 -->
         <service
-            android:name=".VpnInterface"
+            android:name=".service.FirewallVpnService"
+            android:enabled="true"
+            android:exported="true"
             android:permission="android.permission.BIND_VPN_SERVICE">
             <intent-filter>
                 <action android:name="android.net.VpnService"/>

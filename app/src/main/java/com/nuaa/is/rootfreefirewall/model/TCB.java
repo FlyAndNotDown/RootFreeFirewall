@@ -1,151 +1,126 @@
+/*
+** Copyright 2015, Mohamed Naufal
+**
+** Licensed under the Apache License, Version 2.0 (the "License");
+** you may not use this file except in compliance with the License.
+** You may obtain a copy of the License at
+**
+**     http://www.apache.org/licenses/LICENSE-2.0
+**
+** Unless required by applicable law or agreed to in writing, software
+** distributed under the License is distributed on an "AS IS" BASIS,
+** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+** See the License for the specific language governing permissions and
+** limitations under the License.
+*/
+
 package com.nuaa.is.rootfreefirewall.model;
 
+import java.io.IOException;
 import java.nio.channels.SelectionKey;
+import java.nio.channels.SocketChannel;
+import java.util.Iterator;
+import java.util.Map;
 
 /**
- * Transport Control Block 传输控制块
- * @author John Kindem
- * @version v1.0
+ * Transmission Control Block
  */
-public class TCB {
+public class TCB
+{
+    public String ipAndPort;
 
-    // TCP 状态信息
-    public static final int TCP_STATUS_NONE = 0;
-    public static final int TCP_STATUS_SYN_SENT = 1;
-    public static final int TCP_STATUS_SYN_RECEIVED = 2;
-    public static final int TCP_STATUS_ESTABLISHED = 3;
-    public static final int TCP_STATUS_LAST_ACK = 4;
+    public long mySequenceNum, theirSequenceNum;
+    public long myAcknowledgementNum, theirAcknowledgementNum;
+    public TCBStatus status;
 
-    // 源端口
-    private int sourcePort;
-    // 目的地址
-    private String destIpAddress;
-    // 目的端口
-    private int destPort;
-
-    // 已经发送的数据量
-    private int bytesCount;
-
-    // 顺序码
-    private long serial;
-    private long serverSerial;
-    // 确认码 (发过来的 serverSerial + serverDataLength)
-    private long confirm;
-    private long serverConfirm;
-
-    // TCP 状态信息
-    private int tcpStatus;
-
-    // selectionKey
-    private SelectionKey selectionKey;
-
-    public TCB(
-            int sourcePort,
-            String destIpAddress,
-            int destPort,
-            int bytesCount,
-            long serial,
-            long serverSerial,
-            long confirm,
-            long serverConfirm,
-            SelectionKey selectionKey
-    ) {
-        this.sourcePort = sourcePort;
-        this.destIpAddress = destIpAddress;
-        this.destPort = destPort;
-        this.bytesCount = bytesCount;
-        this.serial = serial;
-        this.serverSerial = serverSerial;
-        this.confirm = confirm;
-        this.serverConfirm = serverConfirm;
-
-        this.tcpStatus = 0;
-
-        this.selectionKey = selectionKey;
+    // TCP has more states, but we need only these
+    public enum TCBStatus
+    {
+        SYN_SENT,
+        SYN_RECEIVED,
+        ESTABLISHED,
+        CLOSE_WAIT,
+        LAST_ACK,
     }
 
-    // 记录流量
-    public void logBytesCount(int newBytesCount) {
-        this.bytesCount += newBytesCount;
+    public Packet referencePacket;
+
+    public SocketChannel channel;
+    public boolean waitingForNetworkData;
+    public SelectionKey selectionKey;
+
+    private static final int MAX_CACHE_SIZE = 50; // XXX: Is this ideal?
+    private static LRUCache<String, TCB> tcbCache =
+            new LRUCache<>(MAX_CACHE_SIZE, new LRUCache.CleanupCallback<String, TCB>()
+            {
+                @Override
+                public void cleanup(Map.Entry<String, TCB> eldest)
+                {
+                    eldest.getValue().closeChannel();
+                }
+            });
+
+    public static TCB getTCB(String ipAndPort)
+    {
+        synchronized (tcbCache)
+        {
+            return tcbCache.get(ipAndPort);
+        }
     }
 
-    public int getBytesCount() {
-        return bytesCount;
+    public static void putTCB(String ipAndPort, TCB tcb)
+    {
+        synchronized (tcbCache)
+        {
+            tcbCache.put(ipAndPort, tcb);
+        }
     }
 
-    public void setBytesCount(int bytesCount) {
-        this.bytesCount = bytesCount;
+    public TCB(String ipAndPort, long mySequenceNum, long theirSequenceNum, long myAcknowledgementNum, long theirAcknowledgementNum,
+               SocketChannel channel, Packet referencePacket)
+    {
+        this.ipAndPort = ipAndPort;
+
+        this.mySequenceNum = mySequenceNum;
+        this.theirSequenceNum = theirSequenceNum;
+        this.myAcknowledgementNum = myAcknowledgementNum;
+        this.theirAcknowledgementNum = theirAcknowledgementNum;
+
+        this.channel = channel;
+        this.referencePacket = referencePacket;
     }
 
-    public long getSerial() {
-        return serial;
+    public static void closeTCB(TCB tcb)
+    {
+        tcb.closeChannel();
+        synchronized (tcbCache)
+        {
+            tcbCache.remove(tcb.ipAndPort);
+        }
     }
 
-    public void setSerial(long serial) {
-        this.serial = serial;
+    public static void closeAll()
+    {
+        synchronized (tcbCache)
+        {
+            Iterator<Map.Entry<String, TCB>> it = tcbCache.entrySet().iterator();
+            while (it.hasNext())
+            {
+                it.next().getValue().closeChannel();
+                it.remove();
+            }
+        }
     }
 
-    public long getServerSerial() {
-        return serverSerial;
-    }
-
-    public void setServerSerial(long serverSerial) {
-        this.serverSerial = serverSerial;
-    }
-
-    public long getConfirm() {
-        return confirm;
-    }
-
-    public void setConfirm(long confirm) {
-        this.confirm = confirm;
-    }
-
-    public long getServerConfirm() {
-        return serverConfirm;
-    }
-
-    public void setServerConfirm(long serverConfirm) {
-        this.serverConfirm = serverConfirm;
-    }
-
-    public int getTcpStatus() {
-        return tcpStatus;
-    }
-
-    public void setTcpStatus(int tcpStatus) {
-        this.tcpStatus = tcpStatus;
-    }
-
-    public SelectionKey getSelectionKey() {
-        return selectionKey;
-    }
-
-    public void setSelectionKey(SelectionKey selectionKey) {
-        this.selectionKey = selectionKey;
-    }
-
-    public int getSourcePort() {
-        return sourcePort;
-    }
-
-    public void setSourcePort(int sourcePort) {
-        this.sourcePort = sourcePort;
-    }
-
-    public String getDestIpAddress() {
-        return destIpAddress;
-    }
-
-    public void setDestIpAddress(String destIpAddress) {
-        this.destIpAddress = destIpAddress;
-    }
-
-    public int getDestPort() {
-        return destPort;
-    }
-
-    public void setDestPort(int destPort) {
-        this.destPort = destPort;
+    private void closeChannel()
+    {
+        try
+        {
+            channel.close();
+        }
+        catch (IOException e)
+        {
+            // Ignore
+        }
     }
 }

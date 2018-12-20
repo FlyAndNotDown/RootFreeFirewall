@@ -1,5 +1,7 @@
 package com.nuaa.is.rootfreefirewall;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -7,6 +9,8 @@ import android.content.Intent;
 import android.net.VpnService;
 import android.view.View;
 import android.widget.Button;
+
+import com.nuaa.is.rootfreefirewall.service.FirewallVpnService;
 
 /**
  * MainActivity
@@ -16,8 +20,22 @@ import android.widget.Button;
  */
 public class MainActivity extends AppCompatActivity {
 
+    // TAG
+    private static final String TAG = "RFF-MainActivity";
+
     // VpnInterface请求码
     private static final int REQUEST_CODE__VPN_INTERFACE = 678;
+    // 等待 Vpn 启动状态
+    private boolean waittingVpnStart;
+
+    private BroadcastReceiver vpnStateReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            // TODO
+        }
+    };
+
+
 
     // UI组件
     private Button startFirewallButton;
@@ -25,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        stopService(new Intent(this, VpnInterface.class));
+        stopService(new Intent(this, FirewallVpnService.class));
     }
 
     @Override
@@ -80,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == REQUEST_CODE__VPN_INTERFACE) {
             if (resultCode == RESULT_OK) {
                 // 开启服务
-                startService(new Intent(this, VpnInterface.class));
+                startService(new Intent(this, FirewallVpnService.class));
             } else {
                 // 启用开启防火墙按钮
                 startFirewallButton.setEnabled(true);

@@ -14,7 +14,7 @@
 ** limitations under the License.
 */
 
-package com.nuaa.is.rootfreefirewall.test;
+package com.nuaa.is.rootfreefirewall.net;
 
 import android.util.Log;
 
@@ -26,6 +26,9 @@ import java.nio.channels.Selector;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
+
+import com.nuaa.is.rootfreefirewall.model.ByteBufferPool;
+import com.nuaa.is.rootfreefirewall.model.Packet;
 
 public class UDPInput implements Runnable
 {
