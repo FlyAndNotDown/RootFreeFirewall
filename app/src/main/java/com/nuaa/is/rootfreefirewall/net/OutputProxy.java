@@ -3,6 +3,7 @@ package com.nuaa.is.rootfreefirewall.net;
 import android.net.VpnService;
 
 import com.nuaa.is.rootfreefirewall.model.IpPacket;
+import com.nuaa.is.rootfreefirewall.model.TcpPacket;
 
 import java.nio.ByteBuffer;
 import java.nio.channels.Selector;
@@ -44,11 +45,39 @@ public class OutputProxy extends Thread {
     // 线程主函数
     @Override
     public void run() {
+        this.running = true;
+
         IpPacket ipPacket;
 
         // 循环发送
         while (true) {
-            // TODO
+            // 阻塞到有数据才开始处理
+            try {
+                ipPacket = inputQueue.poll();
+                Thread.sleep(15);
+
+                if (ipPacket == null) {
+                    continue;
+                }
+            } catch (InterruptedException e) {
+                if (!this.running) {
+                    return;
+                }
+                continue;
+            }
+
+            // 根据情况讨论
+            // 如果是 tcp
+            switch (ipPacket.getProtocol()) {
+                case "TCP":
+                    // 拆包
+                    TcpPacket tcpPacket = new TcpPacket(ipPacket.getData());
+                    // TODO
+                case "UDP":
+                    break;
+                default:
+                    break;
+            }
         }
     }
 }
