@@ -16,6 +16,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".view.activity.NetworkConfigActivity"/>
         <!-- 服务声明 -->
         <service
             android:name=".service.FirewallVpnService"

@@ -17,6 +17,7 @@ import android.widget.Button;
 
 import com.nuaa.is.rootfreefirewall.R;
 import com.nuaa.is.rootfreefirewall.service.FirewallVpnService;
+import com.nuaa.is.rootfreefirewall.view.activity.NetworkConfigActivity;
 
 /**
  * Network模块 Fragment
@@ -27,7 +28,8 @@ public class NetworkFragment extends Fragment {
     private static final String TAG = "RFF-NetworkFragment";
 
     // Service & Activity 请求码
-    private static final int REQUEST_CODE__FIREWALL_VPN_SERVICE = 678;
+    private static final int REQUEST_CODE__FIREWALL_VPN_SERVICE = 0xf0;
+    private static final int REQUEST_CODE__NETWORK_CONFIG_ACTIVITY = 0xf1;
 
     // 等待 Vpn 启动状态
     private boolean waittingVpnStart;
@@ -114,6 +116,21 @@ public class NetworkFragment extends Fragment {
             public void onClick(View v) {
                 // 准备VpnService
                 prepareVpnService();
+            }
+        });
+
+        // 配置防火墙监听事件
+        this.configFirewallButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // 开启配置 Activity
+                startActivityForResult(
+                        new Intent(
+                                getActivity().getApplicationContext(),
+                                NetworkConfigActivity.class
+                        ),
+                        REQUEST_CODE__NETWORK_CONFIG_ACTIVITY
+                );
             }
         });
     }
