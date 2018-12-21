@@ -11,13 +11,20 @@
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:weightSum="1">
+        android:weightSum="3">
+
+        <Button
+            android:id="@+id/activity_main__config_firewall_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/main_activity__config_firewall_button__text"/>
 
         <Button
             android:id="@+id/activity_main__start_firewall_button"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_weight="2"
             android:text="@string/main_activity__start_firewall_button__enable__text"/>
 
     </LinearLayout>
@@ -25,7 +32,7 @@
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_weight="1">
 
         <android.support.design.widget.BottomNavigationView
