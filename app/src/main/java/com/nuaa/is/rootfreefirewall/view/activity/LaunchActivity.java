@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
 import com.nuaa.is.rootfreefirewall.R;
+import com.nuaa.is.rootfreefirewall.view.fragment.MessageFragment;
 import com.nuaa.is.rootfreefirewall.view.fragment.NetworkFragment;
 
 /**
@@ -17,12 +18,10 @@ import com.nuaa.is.rootfreefirewall.view.fragment.NetworkFragment;
  */
 public class LaunchActivity extends AppCompatActivity {
 
-    // 底部导航栏切换事件监听器
-    private BottomNavigationView.OnNavigationItemSelectedListener onNavigationItemSelectedListener;
-
     // Fragments
     private Fragment[] fragments;
     private NetworkFragment networkFragment;
+    private MessageFragment messageFragment;
     // 上一个选择的 Fragment
     private int lastFragment;
 
@@ -51,7 +50,11 @@ public class LaunchActivity extends AppCompatActivity {
     private void initFragment() {
         this.lastFragment = 0;
         this.networkFragment = new NetworkFragment();
-        this.fragments = new Fragment[] { this.networkFragment };
+        this.messageFragment = new MessageFragment();
+        this.fragments = new Fragment[] {
+                this.networkFragment,
+                this.messageFragment
+        };
 
         getSupportFragmentManager()
                 .beginTransaction()
@@ -62,7 +65,7 @@ public class LaunchActivity extends AppCompatActivity {
 
     // 注册事件监听器
     private void setEventListener() {
-        this.onNavigationItemSelectedListener = new BottomNavigationView.OnNavigationItemSelectedListener() {
+        this.bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
                 switch (menuItem.getItemId()) {
@@ -82,7 +85,7 @@ public class LaunchActivity extends AppCompatActivity {
                         return false;
                 }
             }
-        };
+        });
     }
 
     // 切换 Fragment
