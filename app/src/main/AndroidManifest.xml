@@ -10,7 +10,6 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <!-- Activity声明 -->
-        <activity android:name=".view.activity.MainActivity"/>
         <activity android:name=".view.activity.LaunchActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
