@@ -1,4 +1,4 @@
-package com.nuaa.is.rootfreefirewall;
+package com.nuaa.is.rootfreefirewall.view;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -12,6 +12,7 @@ import android.net.VpnService;
 import android.view.View;
 import android.widget.Button;
 
+import com.nuaa.is.rootfreefirewall.R;
 import com.nuaa.is.rootfreefirewall.service.FirewallVpnService;
 
 /**
