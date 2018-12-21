@@ -9,7 +9,8 @@
 
     <string name="activity_launch__navigation_network_title">Network</string>
     <string name="activity_launch__navigation_message_title">Message</string>
-
     <string name="activity_network_config__firewall_mode_text_view__text">防火墙模式:</string>
+    <string name="activity_network_config__firewall_mode__spy">监控</string>
+    <string name="activity_network_config__firewall_mode__kill">拦截</string>
 
 </resources>
