@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/activity_main__navigation_network"
+        android:icon="@drawable/ic_activity_main__navigation_network"
+        android:title="@string/activity_main__navigation_network_title"/>
+    <item
+        android:id="@+id/activity_main__navigation_message"
+        android:icon="@drawable/ic_activity_main__navigation_message"
+        android:title="@string/activity_main__navigation_message_title"/>
+</menu>
