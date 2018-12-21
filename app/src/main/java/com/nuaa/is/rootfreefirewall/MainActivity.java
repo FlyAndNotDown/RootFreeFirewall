@@ -96,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
 
     // 获取UI组件函数
     private void getUIComponent() {
-        this.startFirewallButton = findViewById(R.id.startFirewallButton);
+        this.startFirewallButton = findViewById(R.id.activity_main__start_firewall_button);
     }
 
     // 添加组件监听事件函数
