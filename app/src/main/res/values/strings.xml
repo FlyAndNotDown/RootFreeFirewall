@@ -7,6 +7,9 @@
 
     <string name="broadcast__vpn_interface_stop">BROADCAST__VPN_INTERFACE_STOP</string>
 
-    <string name="activity_main__navigation_network_title">Network</string>
-    <string name="activity_main__navigation_message_title">Message</string>
+    <string name="activity_launch__navigation_network_title">Network</string>
+    <string name="activity_launch__navigation_message_title">Message</string>
+
+    <string name="activity_network_config__firewall_mode_text_view__text">防火墙模式:</string>
+
 </resources>

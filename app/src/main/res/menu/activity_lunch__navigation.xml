@@ -3,9 +3,9 @@
     <item
         android:id="@+id/activity_launch__navigation_network"
         android:icon="@drawable/ic_activity_main__navigation_network"
-        android:title="@string/activity_main__navigation_network_title"/>
+        android:title="@string/activity_launch__navigation_network_title"/>
     <item
         android:id="@+id/activity_launch__navigation_message"
         android:icon="@drawable/ic_activity_main__navigation_message"
-        android:title="@string/activity_main__navigation_message_title"/>
+        android:title="@string/activity_launch__navigation_message_title"/>
 </menu>
