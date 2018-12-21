@@ -34,7 +34,7 @@ public class NetworkFragment extends Fragment {
 
     // UI组件
     private Button startFirewallButton;
-    private Button stopFirewallButton;
+    private Button configFirewallButton;
 
     private BroadcastReceiver vpnStateReceiver = new BroadcastReceiver() {
         @Override
@@ -52,7 +52,7 @@ public class NetworkFragment extends Fragment {
         super.onResume();
 
         // 设置按钮状态
-        this.setStartFirewallButtonEnable(!waittingVpnStart && !FirewallVpnService.isRunning());
+        this.setButtonEnableStatus(!waittingVpnStart && !FirewallVpnService.isRunning());
     }
 
     @Nullable
@@ -87,7 +87,7 @@ public class NetworkFragment extends Fragment {
                 this.waittingVpnStart = true;
 
                 // 调整启动 VPN 按钮状态
-                this.setStartFirewallButtonEnable(false);
+                this.setButtonEnableStatus(false);
             }
         }
     }
@@ -103,6 +103,7 @@ public class NetworkFragment extends Fragment {
     // 获取UI组件函数
     private void getUIComponent() {
         this.startFirewallButton = getActivity().findViewById(R.id.fragment_network__start_firewall_button);
+        this.configFirewallButton = getActivity().findViewById(R.id.fragment_network__config_firewall_button);
     }
 
     // 添加组件监听事件函数
@@ -132,10 +133,10 @@ public class NetworkFragment extends Fragment {
     }
 
     // 设置启动防火墙按钮状态
-    private void setStartFirewallButtonEnable(boolean enable) {
+    private void setButtonEnableStatus(boolean enable) {
         // 设置激活状态
         this.startFirewallButton.setEnabled(enable);
-        this.stopFirewallButton.setEnabled(enable);
+        this.configFirewallButton.setEnabled(enable);
         // 设置文字
         this.startFirewallButton.setText(
                 enable ? getString(R.string.fragment_network__start_firewall_button__enable__text) :
