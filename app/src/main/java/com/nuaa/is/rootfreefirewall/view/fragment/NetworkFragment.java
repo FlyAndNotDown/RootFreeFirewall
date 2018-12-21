@@ -34,6 +34,7 @@ public class NetworkFragment extends Fragment {
 
     // UI组件
     private Button startFirewallButton;
+    private Button stopFirewallButton;
 
     private BroadcastReceiver vpnStateReceiver = new BroadcastReceiver() {
         @Override
@@ -134,6 +135,7 @@ public class NetworkFragment extends Fragment {
     private void setStartFirewallButtonEnable(boolean enable) {
         // 设置激活状态
         this.startFirewallButton.setEnabled(enable);
+        this.stopFirewallButton.setEnabled(enable);
         // 设置文字
         this.startFirewallButton.setText(
                 enable ? getString(R.string.fragment_network__start_firewall_button__enable__text) :
