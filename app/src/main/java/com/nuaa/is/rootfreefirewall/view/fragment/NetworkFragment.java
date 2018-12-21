@@ -136,8 +136,8 @@ public class NetworkFragment extends Fragment {
         this.startFirewallButton.setEnabled(enable);
         // 设置文字
         this.startFirewallButton.setText(
-                enable ? getString(R.string.main_activity__start_firewall_button__enable__text) :
-                        getString(R.string.main_activity__start_firewall_button__disenable__text)
+                enable ? getString(R.string.fragment_network__start_firewall_button__enable__text) :
+                        getString(R.string.fragment_network__start_firewall_button__disabled__text)
         );
     }
 }
