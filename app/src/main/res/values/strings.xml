@@ -4,7 +4,10 @@
     <string name="main_activity__start_firewall_button__enable__text">开启防火墙</string>
     <string name="main_activity__start_firewall_button__disenable__text">退出应用以关闭防火墙</string>
     <string name="main_activity__config_firewall_button__text">配置防火墙</string>
-    
+    <string name="fragment_network__start_firewall_button__enable__text">开启防火墙</string>
+    <string name="fragment_network__start_firewall_button__disabled__text">退出应用以关闭防火墙</string>
+    <string name="fragment_network__config_firewall_button__text">配置防火墙</string>
+
     <string name="broadcast__vpn_interface_stop">BROADCAST__VPN_INTERFACE_STOP</string>
 
     <string name="activity_main__navigation_network_title">Network</string>

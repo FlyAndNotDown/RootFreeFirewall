@@ -6,15 +6,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".view.LaunchActivity">
+    tools:context=".view.activity.LaunchActivity">
 
     <LinearLayout
+        android:id="@+id/activity_launch__container"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="10">
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+
     </LinearLayout>
 
     <LinearLayout
@@ -24,6 +23,7 @@
         android:layout_weight="1"
         android:elevation="15dp">
         <android.support.design.widget.BottomNavigationView
+            android:id="@+id/activity_launch__navigation"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"

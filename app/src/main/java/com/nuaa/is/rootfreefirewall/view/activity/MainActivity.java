@@ -1,4 +1,4 @@
-package com.nuaa.is.rootfreefirewall.view;
+package com.nuaa.is.rootfreefirewall.view.activity;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
