@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.net.VpnService;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -38,6 +39,14 @@ public class NetworkFragment extends Fragment {
     private Button startFirewallButton;
     private Button configFirewallButton;
 
+    // 配置信息
+    public static final String DEFAULT_FIREWALL_MODE = "监控";
+    public static final boolean DEFAULT_ENABLE_TCP = true;
+    public static final boolean DEFAULT_ENABLE_UDP = true;
+    private String firewallMode;
+    private boolean enableTcp;
+    private boolean enableUdp;
+
     private BroadcastReceiver vpnStateReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -55,6 +64,9 @@ public class NetworkFragment extends Fragment {
 
         // 设置按钮状态
         this.setButtonEnableStatus(!waittingVpnStart && !FirewallVpnService.isRunning());
+
+        // 更新配置
+        this.updateConfig();
     }
 
     @Nullable
@@ -67,6 +79,8 @@ public class NetworkFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+        // 更新配置
+        this.updateConfig();
         // 获取UI组件
         this.getUIComponent();
         // 添加组件监听事件
@@ -82,15 +96,22 @@ public class NetworkFragment extends Fragment {
         super.onActivityResult(requestCode, resultCode, data);
 
         // 如果是启动VpnInterface的请求
-        if (requestCode == REQUEST_CODE__FIREWALL_VPN_SERVICE) {
-            if (resultCode == getActivity().RESULT_OK) {
-                // 开启服务
-                getActivity().startService(new Intent(getActivity(), FirewallVpnService.class));
-                this.waittingVpnStart = true;
+        switch (requestCode) {
+            case REQUEST_CODE__FIREWALL_VPN_SERVICE:
+                if (resultCode == getActivity().RESULT_OK) {
+                    // 开启服务
+                    getActivity().startService(new Intent(getActivity(), FirewallVpnService.class));
+                    this.waittingVpnStart = true;
 
-                // 调整启动 VPN 按钮状态
-                this.setButtonEnableStatus(false);
-            }
+                    // 调整启动 VPN 按钮状态
+                    this.setButtonEnableStatus(false);
+                }
+                break;
+            case REQUEST_CODE__NETWORK_CONFIG_ACTIVITY:
+                this.updateConfig();
+                break;
+            default:
+                break;
         }
     }
 
@@ -123,14 +144,12 @@ public class NetworkFragment extends Fragment {
         this.configFirewallButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Intent intent = new Intent(getActivity().getApplicationContext(), NetworkConfigActivity.class);
+                intent.putExtra("firewallMode", firewallMode);
+                intent.putExtra("enableTcp", enableTcp);
+                intent.putExtra("enableUdp", enableUdp);
                 // 开启配置 Activity
-                startActivityForResult(
-                        new Intent(
-                                getActivity().getApplicationContext(),
-                                NetworkConfigActivity.class
-                        ),
-                        REQUEST_CODE__NETWORK_CONFIG_ACTIVITY
-                );
+                startActivityForResult(intent, REQUEST_CODE__NETWORK_CONFIG_ACTIVITY);
             }
         });
     }
@@ -160,4 +179,13 @@ public class NetworkFragment extends Fragment {
                         getString(R.string.fragment_network__start_firewall_button__disabled__text)
         );
     }
+
+    // 更新配置
+    private void updateConfig() {
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences(getActivity().getPackageName(), Context.MODE_PRIVATE);
+        this.firewallMode = sharedPreferences.getString("firewallMode", DEFAULT_FIREWALL_MODE);
+        this.enableTcp = sharedPreferences.getBoolean("enableTcp", DEFAULT_ENABLE_TCP);
+        this.enableUdp = sharedPreferences.getBoolean("enableUdp", DEFAULT_ENABLE_UDP);
+    }
+
 }
