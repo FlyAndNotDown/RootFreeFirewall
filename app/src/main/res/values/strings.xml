@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">RootFreeFirewall</string>
+    <string name="app_name">免Root防火墙</string>
 
     <string name="fragment_network__start_firewall_button__enable__text">开启防火墙</string>
     <string name="fragment_network__start_firewall_button__disabled__text">退出应用以关闭防火墙</string>
@@ -9,8 +9,8 @@
 
     <string name="broadcast__vpn_interface_stop">BROADCAST__VPN_INTERFACE_STOP</string>
 
-    <string name="activity_launch__navigation_network_title">Network</string>
-    <string name="activity_launch__navigation_message_title">Message</string>
+    <string name="activity_launch__navigation_network_title">网络模块</string>
+    <string name="activity_launch__navigation_message_title">短信模块</string>
     <string name="activity_network_config__tcp_flow_mode_text_view__text">TCP流量控制模式:</string>
     <string name="activity_network_config__udp_flow_mode_text_view__text">UDP流量控制模式:</string>
     <string name="activity_network_config__flow_mode__spy">监控</string>
