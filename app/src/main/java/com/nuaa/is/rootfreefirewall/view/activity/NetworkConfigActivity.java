@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
@@ -12,8 +11,6 @@ import android.widget.Spinner;
 
 import com.nuaa.is.rootfreefirewall.R;
 import com.nuaa.is.rootfreefirewall.view.adapter.FlowModeAdapter;
-import com.nuaa.is.rootfreefirewall.view.adapter.NetworkConfigActivityFirewallModeSpinnerAdapter;
-import com.nuaa.is.rootfreefirewall.view.fragment.NetworkFragment;
 
 import java.util.ArrayList;
 import java.util.List;
