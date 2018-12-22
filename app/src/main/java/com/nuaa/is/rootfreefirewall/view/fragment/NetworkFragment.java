@@ -40,9 +40,8 @@ public class NetworkFragment extends Fragment {
     private Button configFirewallButton;
 
     // 配置信息
-    public static final String DEFAULT_FIREWALL_MODE = "监控";
-    public static final boolean DEFAULT_ENABLE_TCP = true;
-    public static final boolean DEFAULT_ENABLE_UDP = true;
+    public static final boolean DEFAULT_IS_TCP_FLOW_MODE_SPY = true;
+    public static final boolean DEFAULT_IS_UDP_FLOW_MODE_SPY = true;
     public boolean isTcpFlowModeSpy;
     public boolean isUdpFlowModeSpy;
 
@@ -181,8 +180,8 @@ public class NetworkFragment extends Fragment {
     // 更新配置
     private void updateConfig() {
         SharedPreferences sharedPreferences = getActivity().getSharedPreferences(getActivity().getPackageName(), Context.MODE_PRIVATE);
-        this.isTcpFlowModeSpy = sharedPreferences.getBoolean("isTcpFlowModeSpy", false);
-        this.isTcpFlowModeSpy = sharedPreferences.getBoolean("isTcpFlowModeSpy", false);
+        this.isTcpFlowModeSpy = sharedPreferences.getBoolean("isTcpFlowModeSpy", DEFAULT_IS_TCP_FLOW_MODE_SPY);
+        this.isUdpFlowModeSpy = sharedPreferences.getBoolean("isUdpFlowModeSpy", DEFAULT_IS_UDP_FLOW_MODE_SPY);
     }
 
 }

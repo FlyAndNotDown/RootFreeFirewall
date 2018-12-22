@@ -11,6 +11,7 @@ import android.widget.AdapterView;
 import android.widget.Spinner;
 
 import com.nuaa.is.rootfreefirewall.R;
+import com.nuaa.is.rootfreefirewall.view.adapter.FlowModeAdapter;
 import com.nuaa.is.rootfreefirewall.view.adapter.NetworkConfigActivityFirewallModeSpinnerAdapter;
 import com.nuaa.is.rootfreefirewall.view.fragment.NetworkFragment;
 
@@ -23,17 +24,21 @@ import java.util.List;
 public class NetworkConfigActivity extends AppCompatActivity {
 
     // UI 组件
-    private Spinner firewallModeSpinner;
+    private Spinner tcpFlowModeSpinner;
+    private Spinner udpFlowModeSpinner;
 
-    // 防火墙模式数据
-    private List<String> firewallModeDatas;
-    // 防火墙模式适配器
-    private NetworkConfigActivityFirewallModeSpinnerAdapter networkConfigActivityFirewallModeSpinnerAdapter;
+    // 流控模式备选数据
+    private List<Boolean> tcpFlowModeDatas;
+    private List<Boolean> udpFlowModeDatas;
+    // 适配器
+    private FlowModeAdapter tcpFlowModeAdapter;
+    private FlowModeAdapter udpFlowModeAdapter;
 
-    // 防火墙模式
-    private String firewallMode;
-    private boolean enableTcp;
-    private boolean enableUdp;
+    // Spinner数据
+    private static final boolean DEFAULT_IS_TCP_FLOW_MODE_SPY = true;
+    private static final boolean DEFAULT_IS_UDP_FLOW_MODE_SPY = true;
+    private boolean isTcpFlowModeSpy;
+    private boolean isUdpFlowModeSpy;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -56,52 +61,87 @@ public class NetworkConfigActivity extends AppCompatActivity {
         this.save();
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        this.save();
+    }
+
     // 解析参数
     private void dealParams() {
         Intent intent = getIntent();
-        this.firewallMode = intent.getStringExtra("firewallMode");
-        this.enableTcp = intent.getBooleanExtra("enableTcp", NetworkFragment.DEFAULT_ENABLE_TCP);
-        this.enableUdp = intent.getBooleanExtra("enableUdp", NetworkFragment.DEFAULT_ENABLE_UDP);
+        this.isTcpFlowModeSpy = intent.getBooleanExtra("isTcpFlowModeSpy", DEFAULT_IS_TCP_FLOW_MODE_SPY);
+        this.isUdpFlowModeSpy = intent.getBooleanExtra("isUdpFlowModeSpy", DEFAULT_IS_UDP_FLOW_MODE_SPY);
     }
 
     // 初始化数据
     private void initData() {
-        this.firewallModeDatas = new ArrayList<>();
-        this.firewallModeDatas.add(getString(R.string.activity_network_config__firewall_mode__spy));
-        this.firewallModeDatas.add(getString(R.string.activity_network_config__firewall_mode__kill));
+        this.tcpFlowModeDatas = new ArrayList<>();
+        this.tcpFlowModeDatas.add(true);
+        this.tcpFlowModeDatas.add(false);
+        this.udpFlowModeDatas = new ArrayList<>();
+        this.udpFlowModeDatas.add(true);
+        this.udpFlowModeDatas.add(false);
     }
 
     // 获取 UI 组件
     private void getUIComponent() {
-        this.firewallModeSpinner = findViewById(R.id.activity_network_config__firewall_mode_spinner);
+        this.tcpFlowModeSpinner = findViewById(R.id.activity_network_config__tcp_flow_mode_spinner);
+        this.udpFlowModeSpinner = findViewById(R.id.activity_network_config__udp_flow_mode_spinner);
     }
 
     // 设置适配器
     private void setAdapter() {
-        this.networkConfigActivityFirewallModeSpinnerAdapter = new NetworkConfigActivityFirewallModeSpinnerAdapter(this);
-        this.firewallModeSpinner.setAdapter(this.networkConfigActivityFirewallModeSpinnerAdapter);
-        this.networkConfigActivityFirewallModeSpinnerAdapter.setDatas(this.firewallModeDatas);
-        this.firewallModeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        // TCP 流控模式适配器
+        this.tcpFlowModeAdapter = new FlowModeAdapter(this);
+        this.tcpFlowModeSpinner.setAdapter(this.tcpFlowModeAdapter);
+        this.tcpFlowModeAdapter.setDatas(this.tcpFlowModeDatas);
+        this.tcpFlowModeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                firewallMode = firewallModeDatas.get(position);
+                isTcpFlowModeSpy = tcpFlowModeDatas.get(position);
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-                firewallMode = firewallModeDatas.get(0);
+                isTcpFlowModeSpy = tcpFlowModeDatas.get(0);
             }
         });
-        this.firewallModeSpinner.setSelection(firewallModeDatas.indexOf(firewallMode), true);
+
+        // UDP 流控模式适配器
+        this.udpFlowModeAdapter = new FlowModeAdapter(this);
+        this.udpFlowModeSpinner.setAdapter(this.udpFlowModeAdapter);
+        this.udpFlowModeAdapter.setDatas(this.udpFlowModeDatas);
+        this.udpFlowModeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                isUdpFlowModeSpy = udpFlowModeDatas.get(position);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                isUdpFlowModeSpy = udpFlowModeDatas.get(0);
+            }
+        });
+
+        // 默认流控模式
+        this.tcpFlowModeSpinner.setSelection(
+                this.tcpFlowModeDatas.indexOf(isTcpFlowModeSpy),
+                true
+        );
+        this.udpFlowModeSpinner.setSelection(
+                this.udpFlowModeDatas.indexOf(isUdpFlowModeSpy),
+                true
+        );
+
     }
 
     // 保存数据
     private void save() {
         SharedPreferences sharedPreferences = getSharedPreferences(getPackageName(), Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString("firewallMode", this.firewallMode);
-        editor.putBoolean("enableTcp", this.enableTcp);
-        editor.putBoolean("enableUdp", this.enableUdp);
+        editor.putBoolean("isTcpFlowModeSpy", this.isTcpFlowModeSpy);
+        editor.putBoolean("isUdpFlowModeSpy", this.isUdpFlowModeSpy);
         editor.apply();
         setResult(RESULT_OK);
         finish();
