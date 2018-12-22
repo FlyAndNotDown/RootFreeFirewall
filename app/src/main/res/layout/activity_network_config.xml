@@ -19,6 +19,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/activity_network_config__tcp_flow_mode_text_view__text"
+            android:textColor="@color/colorBlack"
             android:textSize="16sp"/>
 
     </LinearLayout>
@@ -49,6 +50,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/activity_network_config__udp_flow_mode_text_view__text"
+            android:textColor="@color/colorBlack"
             android:textSize="16sp"/>
 
     </LinearLayout>
