@@ -98,7 +98,10 @@ public class NetworkFragment extends Fragment {
             case REQUEST_CODE__FIREWALL_VPN_SERVICE:
                 if (resultCode == getActivity().RESULT_OK) {
                     // 开启服务
-                    getActivity().startService(new Intent(getActivity(), FirewallVpnService.class));
+                    Intent intent = new Intent(getActivity(), FirewallVpnService.class);
+                    intent.putExtra("isTcpFlowModeSpy", this.isTcpFlowModeSpy);
+                    intent.putExtra("isUdpFlowModeSpy", this.isUdpFlowModeSpy);
+                    getActivity().startService(intent);
                     this.waittingVpnStart = true;
 
                     // 调整启动 VPN 按钮状态

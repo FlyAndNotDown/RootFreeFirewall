@@ -44,6 +44,12 @@ public class FirewallVpnService extends VpnService {
     private static final int VPN_ROUTE_MASK = 0;
     private static final int VPN_MTU = 1500;
 
+    // TCP 流控模式
+    private static final boolean DEFAULT_IS_TCP_FLOW_MODE_SPY = true;
+    private static final boolean DEFAULT_IS_UDP_FLOW_MODE_SPY = true;
+    private boolean isTcpFlowModeSpy;
+    private boolean isUdpFlowModeSpy;
+
     // 广播 Vpn 状态
     public static final String BROADCAST_VPN_STATE = "com.nuaa.is.VPN_STATE";
 
@@ -67,6 +73,13 @@ public class FirewallVpnService extends VpnService {
     @Override
     public void onCreate() {
         super.onCreate();
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        // 获取参数
+        this.isTcpFlowModeSpy = intent.getBooleanExtra("isTcpFlowModeSpy", DEFAULT_IS_TCP_FLOW_MODE_SPY);
+        this.isUdpFlowModeSpy = intent.getBooleanExtra("isUdpFlowModeSpy", DEFAULT_IS_UDP_FLOW_MODE_SPY);
 
         // 设置运行状态
         FirewallVpnService.running = true;
@@ -83,27 +96,35 @@ public class FirewallVpnService extends VpnService {
 
         try {
             // 配置选择器
-            udpSelector = Selector.open();
-            tcpSelector = Selector.open();
+            udpSelector = this.isUdpFlowModeSpy ? Selector.open() : null;
+            tcpSelector = this.isTcpFlowModeSpy ? Selector.open() : null;
 
             // 创建队列
-            deviceToNetworkUDPQueue = new ConcurrentLinkedQueue<>();
-            deviceToNetworkTCPQueue = new ConcurrentLinkedQueue<>();
+            if (this.isUdpFlowModeSpy) deviceToNetworkUDPQueue = new ConcurrentLinkedQueue<>();
+            if (this.isTcpFlowModeSpy) deviceToNetworkTCPQueue = new ConcurrentLinkedQueue<>();
             networkToDeviceQueue = new ConcurrentLinkedQueue<>();
 
             // 创建线程池
-            executorService = Executors.newFixedThreadPool(5);
+            executorService = Executors.newFixedThreadPool(
+                    5 - (this.isTcpFlowModeSpy ? 0 : 2) - (this.isUdpFlowModeSpy ? 0 : 2)
+            );
 
             // 每一个线程负责一个任务
-            executorService.submit(new UDPInput(networkToDeviceQueue, udpSelector));
-            executorService.submit(new UDPOutput(deviceToNetworkUDPQueue, udpSelector, this));
-            executorService.submit(new TCPInput(networkToDeviceQueue, tcpSelector));
-            executorService.submit(new TCPOutput(deviceToNetworkTCPQueue, networkToDeviceQueue, tcpSelector, this));
+            if (this.isUdpFlowModeSpy) {
+                executorService.submit(new UDPInput(networkToDeviceQueue, udpSelector));
+                executorService.submit(new UDPOutput(deviceToNetworkUDPQueue, udpSelector, this));
+            }
+            if (this.isTcpFlowModeSpy) {
+                executorService.submit(new TCPInput(networkToDeviceQueue, tcpSelector));
+                executorService.submit(new TCPOutput(deviceToNetworkTCPQueue, networkToDeviceQueue, tcpSelector, this));
+            }
             executorService.submit(new VPNRunnable(
                     parcelFileDescriptor.getFileDescriptor(),
                     deviceToNetworkUDPQueue,
                     deviceToNetworkTCPQueue,
-                    networkToDeviceQueue
+                    networkToDeviceQueue,
+                    isUdpFlowModeSpy,
+                    isTcpFlowModeSpy
             ));
 
             // 发送广播告知 FirewallVpnService 已经运行
@@ -121,10 +142,7 @@ public class FirewallVpnService extends VpnService {
             // 清理
             clean();
         }
-    }
 
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
         return START_STICKY;
     }
 
@@ -171,17 +189,25 @@ public class FirewallVpnService extends VpnService {
         private ConcurrentLinkedQueue<Packet> deviceToNetworkTCPQueue;
         private ConcurrentLinkedQueue<ByteBuffer> networkToDeviceQueue;
 
+        // 流控模式
+        private boolean isUdpFlowModeSpy;
+        private boolean isTcpFlowModeSpy;
+
         // 构造
         public VPNRunnable(
                 FileDescriptor fileDescriptor,
                 ConcurrentLinkedQueue<Packet> deviceToNetworkUDPQueue,
                 ConcurrentLinkedQueue<Packet> deviceToNetworkTCPQueue,
-                ConcurrentLinkedQueue<ByteBuffer> networkToDeviceQueue
+                ConcurrentLinkedQueue<ByteBuffer> networkToDeviceQueue,
+                boolean isUdpFlowModeSpy,
+                boolean isTcpFlowModeSpy
         ) {
             this.fileDescriptor = fileDescriptor;
             this.deviceToNetworkUDPQueue = deviceToNetworkUDPQueue;
             this.deviceToNetworkTCPQueue = deviceToNetworkTCPQueue;
             this.networkToDeviceQueue = networkToDeviceQueue;
+            this.isUdpFlowModeSpy = isUdpFlowModeSpy;
+            this.isTcpFlowModeSpy = isTcpFlowModeSpy;
         }
 
         @Override
@@ -226,12 +252,12 @@ public class FirewallVpnService extends VpnService {
                             // 如果是 UDP 包
                             Log.i(VPNRunnable.TAG, "it's a UDP packet");
                             // 在队列中加入包
-                            deviceToNetworkUDPQueue.offer(packet);
+                            if (this.isUdpFlowModeSpy) deviceToNetworkUDPQueue.offer(packet);
                         } else if (packet.isTCP()) {
                             // 如果是 TCP 包
                             Log.i(VPNRunnable.TAG, "it's a TCP packet");
                             // 在队列中加入包
-                            deviceToNetworkTCPQueue.offer(packet);
+                            if (this.isTcpFlowModeSpy) deviceToNetworkTCPQueue.offer(packet);
                         } else {
                             // 如果是其他包
                             Log.i(VPNRunnable.TAG, "it's a unknown type packet");
