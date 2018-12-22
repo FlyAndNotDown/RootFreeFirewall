@@ -42,6 +42,8 @@ public class NetworkFragment extends Fragment {
 
     // 等待 Vpn 启动状态
     private boolean waittingVpnStart;
+    // Vpn运行状态
+    private boolean vpnServiceRunning = false;
 
     // UI组件
     private Button startFirewallButton;
@@ -66,6 +68,7 @@ public class NetworkFragment extends Fragment {
             if (FirewallVpnService.BROADCAST_VPN_STATE.equals(intent.getAction()) &&
                     intent.getBooleanExtra("running", false)) {
                 waittingVpnStart = false;
+                vpnServiceRunning = true;
             }
         }
     };
@@ -191,10 +194,12 @@ public class NetworkFragment extends Fragment {
         this.appListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                appInfos.get(position).setFlowAllow(
-                        !appInfos.get(position).isFlowAllow()
-                );
-                appListAdapter.notifyDataSetChanged();
+                if (!vpnServiceRunning) {
+                    appInfos.get(position).setFlowAllow(
+                            !appInfos.get(position).isFlowAllow()
+                    );
+                    appListAdapter.notifyDataSetChanged();
+                }
             }
         });
     }
