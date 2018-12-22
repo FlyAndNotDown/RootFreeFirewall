@@ -14,27 +14,27 @@ public class AppInfo {
     // 包名
     private String packageName;
     // 防火墙是否激活
-    private boolean firewallActive;
+    private boolean flowAllow;
 
     public AppInfo() {
         this.icon = null;
         this.name = "";
         this.packageName = "";
-        this.firewallActive = false;
+        this.flowAllow = true;
     }
 
     public AppInfo(Drawable icon, String name, String packageName) {
         this.icon = icon;
         this.name = name;
         this.packageName = packageName;
-        this.firewallActive = false;
+        this.flowAllow = true;
     }
 
-    public AppInfo(Drawable icon, String name, String packageName, boolean firewallActive) {
+    public AppInfo(Drawable icon, String name, String packageName, boolean flowAllow) {
         this.icon = icon;
         this.name = name;
         this.packageName = packageName;
-        this.firewallActive = firewallActive;
+        this.flowAllow = flowAllow;
     }
 
     public Drawable getIcon() {
@@ -61,11 +61,11 @@ public class AppInfo {
         this.packageName = packageName;
     }
 
-    public boolean isFirewallActive() {
-        return firewallActive;
+    public boolean isFlowAllow() {
+        return flowAllow;
     }
 
-    public void setFirewallActive(boolean firewallActive) {
-        this.firewallActive = firewallActive;
+    public void setFlowAllow(boolean flowAllow) {
+        this.flowAllow = flowAllow;
     }
 }

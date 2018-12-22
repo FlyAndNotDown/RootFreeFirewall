@@ -42,10 +42,12 @@
         android:gravity="end">
 
         <CheckBox
-            android:id="@+id/fragment_network__app_list_item__app_firewall_active_check_box"
+            android:id="@+id/fragment_network__app_list_item__app_flow_allow_check_box"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"/>
+            android:layout_gravity="center_vertical"
+            android:focusable="false"
+            android:enabled="false"/>
 
     </LinearLayout>
 

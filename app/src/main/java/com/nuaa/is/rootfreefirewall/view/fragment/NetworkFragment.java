@@ -171,6 +171,17 @@ public class NetworkFragment extends Fragment {
                 startActivityForResult(intent, REQUEST_CODE__NETWORK_CONFIG_ACTIVITY);
             }
         });
+
+        // listView
+        this.appListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                appInfos.get(position).setFlowAllow(
+                        !appInfos.get(position).isFlowAllow()
+                );
+                appListAdapter.notifyDataSetChanged();
+            }
+        });
     }
 
     // 载入 App 信息

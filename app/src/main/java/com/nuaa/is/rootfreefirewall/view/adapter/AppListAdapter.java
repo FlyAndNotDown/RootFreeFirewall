@@ -26,7 +26,7 @@ public class AppListAdapter extends BaseAdapter {
         ImageView appIconImageView;
         TextView appNameTextView;
         TextView appPackageTextView;
-        CheckBox appFirewallActiveCheckBox;
+        CheckBox appFlowAllowCheckBox;
     }
 
     // 数据
@@ -67,13 +67,7 @@ public class AppListAdapter extends BaseAdapter {
             viewHolder.appIconImageView = (ImageView) convertView.findViewById(R.id.fragment_network__app_list_item__app_icon_image_view);
             viewHolder.appNameTextView = (TextView) convertView.findViewById(R.id.fragment_network__app_list_item__app_name_text_view);
             viewHolder.appPackageTextView = (TextView) convertView.findViewById(R.id.fragment_network__app_list_item__app_package_name_text_view);
-            viewHolder.appFirewallActiveCheckBox = (CheckBox) convertView.findViewById(R.id.fragment_network__app_list_item__app_firewall_active_check_box);
-            viewHolder.appFirewallActiveCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    datas.get(position).setFirewallActive(isChecked);
-                }
-            });
+            viewHolder.appFlowAllowCheckBox = (CheckBox) convertView.findViewById(R.id.fragment_network__app_list_item__app_flow_allow_check_box);
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
@@ -88,8 +82,8 @@ public class AppListAdapter extends BaseAdapter {
         viewHolder.appPackageTextView.setText(
                 datas.get(position).getPackageName()
         );
-        viewHolder.appFirewallActiveCheckBox.setChecked(
-                datas.get(position).isFirewallActive()
+        viewHolder.appFlowAllowCheckBox.setChecked(
+                datas.get(position).isFlowAllow()
         );
 
         return convertView;
