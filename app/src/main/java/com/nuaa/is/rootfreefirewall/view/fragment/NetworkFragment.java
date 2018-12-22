@@ -93,6 +93,8 @@ public class NetworkFragment extends Fragment {
 
         // 更新配置
         this.updateConfig();
+        // 载入 App 信息
+        this.loadAppInfos();
         // 获取UI组件
         this.getUIComponent();
         // 设置适配器
@@ -101,8 +103,6 @@ public class NetworkFragment extends Fragment {
         this.addComponentListener();
         // 注册广播接收器
         this.registerBroadcastReceiver();
-        // 载入 App 信息
-        this.loadAppInfos();
 
         this.waittingVpnStart = false;
     }
