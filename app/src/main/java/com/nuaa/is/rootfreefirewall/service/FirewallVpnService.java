@@ -1,6 +1,7 @@
 package com.nuaa.is.rootfreefirewall.service;
 
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.VpnService;
 import android.os.ParcelFileDescriptor;
 import android.support.v4.content.LocalBroadcastManager;
@@ -23,6 +24,7 @@ import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.channels.Selector;
+import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -49,6 +51,9 @@ public class FirewallVpnService extends VpnService {
     private static final boolean DEFAULT_IS_UDP_FLOW_MODE_SPY = true;
     private boolean isTcpFlowModeSpy;
     private boolean isUdpFlowModeSpy;
+
+    // 防火墙覆盖的应用包名列表
+    private List<String> allowedPackageNames;
 
     // 广播 Vpn 状态
     public static final String BROADCAST_VPN_STATE = "com.nuaa.is.VPN_STATE";
@@ -80,17 +85,31 @@ public class FirewallVpnService extends VpnService {
         // 获取参数
         this.isTcpFlowModeSpy = intent.getBooleanExtra("isTcpFlowModeSpy", DEFAULT_IS_TCP_FLOW_MODE_SPY);
         this.isUdpFlowModeSpy = intent.getBooleanExtra("isUdpFlowModeSpy", DEFAULT_IS_UDP_FLOW_MODE_SPY);
+        this.allowedPackageNames = intent.getStringArrayListExtra("allowedPackageNames");
 
         // 设置运行状态
         FirewallVpnService.running = true;
 
         // 建立 VPN 连接
         if (this.parcelFileDescriptor == null) {
+            // 设置参数
             Builder builder = new Builder();
             builder.setSession(getString(R.string.app_name));
             builder.addAddress(VPN_ADDRESS, VPN_ADDRESS_MASK);
             builder.addRoute(VPN_ROUTE, VPN_ROUTE_MASK);
             builder.setMtu(VPN_MTU);
+
+            // 添加覆盖应用
+            for (String packageName : this.allowedPackageNames) {
+                try {
+                    builder.addAllowedApplication(packageName);
+                } catch (PackageManager.NameNotFoundException e) {
+                    e.printStackTrace();
+                    Log.e(FirewallVpnService.TAG, "can't get application by package name");
+                }
+            }
+
+            // 建立连接
             this.parcelFileDescriptor = builder.establish();
         }
 

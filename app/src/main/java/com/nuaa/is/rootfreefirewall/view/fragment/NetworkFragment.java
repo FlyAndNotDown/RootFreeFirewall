@@ -115,10 +115,17 @@ public class NetworkFragment extends Fragment {
         switch (requestCode) {
             case REQUEST_CODE__FIREWALL_VPN_SERVICE:
                 if (resultCode == getActivity().RESULT_OK) {
+                    // 构造参数
+                    ArrayList<String> allowedPackageNames = new ArrayList<>();
+                    for (AppInfo appInfo : this.appInfos) {
+                        if (!appInfo.isFlowAllow()) allowedPackageNames.add(appInfo.getPackageName());
+                    }
+
                     // 开启服务
                     Intent intent = new Intent(getActivity(), FirewallVpnService.class);
                     intent.putExtra("isTcpFlowModeSpy", this.isTcpFlowModeSpy);
                     intent.putExtra("isUdpFlowModeSpy", this.isUdpFlowModeSpy);
+                    intent.putStringArrayListExtra("allowedPackageNames", allowedPackageNames);
                     getActivity().startService(intent);
                     this.waittingVpnStart = true;
 
