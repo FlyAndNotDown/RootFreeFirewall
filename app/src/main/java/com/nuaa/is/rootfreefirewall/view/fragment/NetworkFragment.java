@@ -43,9 +43,8 @@ public class NetworkFragment extends Fragment {
     public static final String DEFAULT_FIREWALL_MODE = "监控";
     public static final boolean DEFAULT_ENABLE_TCP = true;
     public static final boolean DEFAULT_ENABLE_UDP = true;
-    private String firewallMode;
-    private boolean enableTcp;
-    private boolean enableUdp;
+    public boolean isTcpFlowModeSpy;
+    public boolean isUdpFlowModeSpy;
 
     private BroadcastReceiver vpnStateReceiver = new BroadcastReceiver() {
         @Override
@@ -145,9 +144,8 @@ public class NetworkFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity().getApplicationContext(), NetworkConfigActivity.class);
-                intent.putExtra("firewallMode", firewallMode);
-                intent.putExtra("enableTcp", enableTcp);
-                intent.putExtra("enableUdp", enableUdp);
+                intent.putExtra("isTcpFlowModeSpy", isTcpFlowModeSpy);
+                intent.putExtra("isUdpFlowModeSpy", isUdpFlowModeSpy);
                 // 开启配置 Activity
                 startActivityForResult(intent, REQUEST_CODE__NETWORK_CONFIG_ACTIVITY);
             }
@@ -183,9 +181,8 @@ public class NetworkFragment extends Fragment {
     // 更新配置
     private void updateConfig() {
         SharedPreferences sharedPreferences = getActivity().getSharedPreferences(getActivity().getPackageName(), Context.MODE_PRIVATE);
-        this.firewallMode = sharedPreferences.getString("firewallMode", DEFAULT_FIREWALL_MODE);
-        this.enableTcp = sharedPreferences.getBoolean("enableTcp", DEFAULT_ENABLE_TCP);
-        this.enableUdp = sharedPreferences.getBoolean("enableUdp", DEFAULT_ENABLE_UDP);
+        this.isTcpFlowModeSpy = sharedPreferences.getBoolean("isTcpFlowModeSpy", false);
+        this.isTcpFlowModeSpy = sharedPreferences.getBoolean("isTcpFlowModeSpy", false);
     }
 
 }
