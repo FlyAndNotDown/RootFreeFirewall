@@ -17,8 +17,12 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.nuaa.is.rootfreefirewall.R;
+import com.nuaa.is.rootfreefirewall.model.AppInfo;
 import com.nuaa.is.rootfreefirewall.service.FirewallVpnService;
+import com.nuaa.is.rootfreefirewall.util.AppUtil;
 import com.nuaa.is.rootfreefirewall.view.activity.NetworkConfigActivity;
+
+import java.util.List;
 
 /**
  * Network模块 Fragment
@@ -38,6 +42,9 @@ public class NetworkFragment extends Fragment {
     // UI组件
     private Button startFirewallButton;
     private Button configFirewallButton;
+
+    // App 信息
+    private List<AppInfo> appInfos;
 
     // 配置信息
     public static final boolean DEFAULT_IS_TCP_FLOW_MODE_SPY = true;
@@ -85,6 +92,8 @@ public class NetworkFragment extends Fragment {
         this.addComponentListener();
         // 注册广播接收器
         this.registerBroadcastReceiver();
+        // 载入 App 信息
+        this.loadAppInfos();
 
         this.waittingVpnStart = false;
     }
@@ -152,6 +161,11 @@ public class NetworkFragment extends Fragment {
                 startActivityForResult(intent, REQUEST_CODE__NETWORK_CONFIG_ACTIVITY);
             }
         });
+    }
+
+    // 载入 App 信息
+    private void loadAppInfos() {
+        this.appInfos = AppUtil.getUserAppInfos(getActivity());
     }
 
     // 准备VpnService函数
