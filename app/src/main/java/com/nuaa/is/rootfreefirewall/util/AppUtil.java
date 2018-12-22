@@ -11,17 +11,22 @@ import com.nuaa.is.rootfreefirewall.model.AppInfo;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.StringTokenizer;
 
 /**
  * App 工具
  */
 public class AppUtil {
+    // TAG
     private static String TAG = "RFF-AppUtil";
+    // 文件名
+    private static String SAVE_FILE_NAME = "appFlowAllowList";
 
     public static List<AppInfo> getUserAppInfos(Context context) {
         List<AppInfo> appInfos = new ArrayList<>();
@@ -35,7 +40,7 @@ public class AppUtil {
         boolean flowAllowListFileFound = true;
         FileInputStream fileInputStream = null;
         try {
-            fileInputStream = context.openFileInput("appFlowAllowList");
+            fileInputStream = context.openFileInput(AppUtil.SAVE_FILE_NAME);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
             Log.e(AppUtil.TAG, "appFlowAllowList file not found");
@@ -57,8 +62,13 @@ public class AppUtil {
         }
         String string = bytes == null ? "" : new String(bytes);
         if (!string.isEmpty()) {
-            for (String line : string.split("\n")) {
-                packageNameToFlowAllow.put(line.split(" ")[0], Boolean.valueOf(line.split(" ")[1]));
+            StringTokenizer stringTokenizer = new StringTokenizer(string, "\n");
+            while (stringTokenizer.hasMoreTokens()) {
+                StringTokenizer stringTokenizer1 = new StringTokenizer(stringTokenizer.nextToken(), " ");
+                packageNameToFlowAllow.put(
+                        stringTokenizer1.nextToken(),
+                        Boolean.valueOf(stringTokenizer1.nextToken())
+                );
             }
         }
 
@@ -91,6 +101,34 @@ public class AppUtil {
         }
 
         return appInfos;
+    }
+
+    // 储存信息到文件
+    public static void save(Context context, List<AppInfo> appInfos) {
+
+        // 尝试打开文件
+        FileOutputStream fileOutputStream = null;
+        try {
+            fileOutputStream = context.openFileOutput(AppUtil.SAVE_FILE_NAME, Context.MODE_PRIVATE);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            Log.e(AppUtil.TAG, "Can't open file");
+        }
+
+        // 开始写入内容
+        if (fileOutputStream != null) {
+            String result = "";
+            for (AppInfo appInfo : appInfos) {
+                result += appInfo.getPackageName() + " " + appInfo.isFlowAllow() + "\n";
+            }
+            try {
+                fileOutputStream.write(result.getBytes());
+            } catch (IOException e) {
+                e.printStackTrace();
+                Log.e(AppUtil.TAG, "get a IO exception");
+            }
+        }
+
     }
 
 }

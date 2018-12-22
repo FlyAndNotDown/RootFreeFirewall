@@ -134,6 +134,14 @@ public class NetworkFragment extends Fragment {
         }
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        // 保存 app 信息
+        AppUtil.save(getActivity(), this.appInfos);
+    }
+
     // 注册广播接收器函数
     private void registerBroadcastReceiver() {
         // VpnState 广播
