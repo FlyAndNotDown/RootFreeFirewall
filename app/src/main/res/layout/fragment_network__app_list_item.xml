@@ -13,8 +13,7 @@
         <ImageView
             android:layout_marginLeft="10dp"
             android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:src="@drawable/ic_activity_main__navigation_message"/>
+            android:layout_height="40dp"/>
 
         <LinearLayout
             android:layout_marginLeft="10dp"
