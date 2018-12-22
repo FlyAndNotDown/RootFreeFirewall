@@ -14,14 +14,18 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.ListView;
 
 import com.nuaa.is.rootfreefirewall.R;
 import com.nuaa.is.rootfreefirewall.model.AppInfo;
 import com.nuaa.is.rootfreefirewall.service.FirewallVpnService;
 import com.nuaa.is.rootfreefirewall.util.AppUtil;
 import com.nuaa.is.rootfreefirewall.view.activity.NetworkConfigActivity;
+import com.nuaa.is.rootfreefirewall.view.adapter.AppListAdapter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -42,9 +46,12 @@ public class NetworkFragment extends Fragment {
     // UI组件
     private Button startFirewallButton;
     private Button configFirewallButton;
+    private ListView appListView;
 
     // App 信息
     private List<AppInfo> appInfos;
+    // App 适配器
+    private AppListAdapter appListAdapter;
 
     // 配置信息
     public static final boolean DEFAULT_IS_TCP_FLOW_MODE_SPY = true;
@@ -88,6 +95,8 @@ public class NetworkFragment extends Fragment {
         this.updateConfig();
         // 获取UI组件
         this.getUIComponent();
+        // 设置适配器
+        this.setAdapter();
         // 添加组件监听事件
         this.addComponentListener();
         // 注册广播接收器
@@ -137,6 +146,7 @@ public class NetworkFragment extends Fragment {
     private void getUIComponent() {
         this.startFirewallButton = getActivity().findViewById(R.id.fragment_network__start_firewall_button);
         this.configFirewallButton = getActivity().findViewById(R.id.fragment_network__config_firewall_button);
+        this.appListView = getActivity().findViewById(R.id.fragment_network__app_list_view);
     }
 
     // 添加组件监听事件函数
@@ -166,6 +176,13 @@ public class NetworkFragment extends Fragment {
     // 载入 App 信息
     private void loadAppInfos() {
         this.appInfos = AppUtil.getUserAppInfos(getActivity());
+    }
+
+    // 设置适配器
+    private void setAdapter() {
+        this.appListAdapter = new AppListAdapter(getActivity());
+        this.appListView.setAdapter(this.appListAdapter);
+        this.appListAdapter.setDatas(this.appInfos);
     }
 
     // 准备VpnService函数
