@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.nuaa.is.rootfreefirewall">
 
     <application
@@ -13,7 +14,8 @@
         <activity android:name=".view.activity.LaunchActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
-                <category android:name="android.intent.category.LAUNCHER" />
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
         <activity android:name=".view.activity.NetworkConfigActivity"/>
@@ -27,14 +29,13 @@
                 <action android:name="android.net.VpnService"/>
             </intent-filter>
         </service>
-        <receiver android:name=".service.MessageService">
-            <intent-filter android:priority="1000">
-                <action android:name="android.provider.Telephony_SMS_RECIEVED"/>
-            </intent-filter>
-        </receiver>
     </application>
 
     <!-- 声明权限 -->
     <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.WRITE_SMS"/>
+    <uses-permission android:name="android.permission.READ_SMS"/>
+    <uses-permission android:name="android.permission.RECEIVE_SMS"/>
+    <uses-permission android:name="android.permission.RECEIVE_MMS"/>
 
 </manifest>
