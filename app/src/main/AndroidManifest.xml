@@ -27,6 +27,11 @@
                 <action android:name="android.net.VpnService"/>
             </intent-filter>
         </service>
+        <receiver android:name=".service.MessageService">
+            <intent-filter android:priority="1000">
+                <action android:name="android.provider.Telephony_SMS_RECIEVED"/>
+            </intent-filter>
+        </receiver>
     </application>
 
     <!-- 声明权限 -->
