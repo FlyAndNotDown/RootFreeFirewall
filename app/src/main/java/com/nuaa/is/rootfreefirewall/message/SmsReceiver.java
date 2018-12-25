@@ -5,7 +5,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.telephony.SmsMessage;
@@ -25,8 +24,6 @@ public class SmsReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         // 日志
         Log.i(SmsReceiver.TAG, "enter onReceive()");
-
-        Cursor cursor = null;
 
         try {
             // 如果收到了新的短信
