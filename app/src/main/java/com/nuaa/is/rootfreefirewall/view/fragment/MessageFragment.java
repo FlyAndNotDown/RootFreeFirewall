@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.nuaa.is.rootfreefirewall.R;
 
@@ -18,7 +19,7 @@ import com.nuaa.is.rootfreefirewall.R;
 public class MessageFragment extends Fragment {
 
     // 默认短信应用
-    private static final String defaultSmsApplication = "com.android.sms";
+    private String defaultSmsApplication;
 
     @Nullable
     @Override
@@ -30,7 +31,7 @@ public class MessageFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-
+        // 请求变更默认短信应用
         this.requestToBeDefaultSmsApplication();
     }
 
@@ -42,6 +43,16 @@ public class MessageFragment extends Fragment {
 
     // 请求成为默认短信应用
     private void requestToBeDefaultSmsApplication() {
+        // Toast 提示
+        Toast.makeText(
+                getActivity(),
+                getString(R.string.toast__change_default_sms_application),
+                Toast.LENGTH_LONG
+        ).show();
+
+        // 保存原来的默认短信应用信息
+        this.defaultSmsApplication = Telephony.Sms.getDefaultSmsPackage(getActivity());
+
         // 向用户请求将本应用设置成默认短信应用
         Intent intent = new Intent(Telephony.Sms.Intents.ACTION_CHANGE_DEFAULT);
         intent.putExtra(Telephony.Sms.Intents.EXTRA_PACKAGE_NAME, getActivity().getPackageName());
@@ -50,6 +61,14 @@ public class MessageFragment extends Fragment {
 
     // 还原成原来的短信应用
     private void recoverDefaultSmsApplication() {
+        // Toast 提示
+        Toast.makeText(
+                getActivity(),
+                getString(R.string.toast__recover_default_sms_application),
+                Toast.LENGTH_LONG
+        ).show();
+
+        // 想用户请求将默认短信应用还原成原来的应用
         Intent intent = new Intent(Telephony.Sms.Intents.ACTION_CHANGE_DEFAULT);
         intent.putExtra(Telephony.Sms.Intents.EXTRA_PACKAGE_NAME, this.defaultSmsApplication);
         startActivity(intent);

@@ -16,4 +16,7 @@
     <string name="activity_network_config__flow_mode__spy">监控</string>
     <string name="activity_network_config__flow_mode__kill">拦截</string>
 
+    <string name="toast__change_default_sms_application">请更改默认短信应用，否则短信防火墙无法使用</string>
+    <string name="toast__recover_default_sms_application">请换源默认短信应用，否则你的短信将无法使用</string>
+
 </resources>
