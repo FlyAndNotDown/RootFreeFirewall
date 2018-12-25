@@ -1,6 +1,7 @@
 package com.nuaa.is.rootfreefirewall.view.fragment;
 
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.provider.Telephony;
 import android.support.annotation.NonNull;
@@ -12,14 +13,20 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.nuaa.is.rootfreefirewall.R;
+import com.nuaa.is.rootfreefirewall.message.SmsReceiver;
 
 /**
  * Message木块 Fragment
  */
 public class MessageFragment extends Fragment {
 
+    // Action
+    private static final String ACTION_SMS_DELIVER = "android.provider.Telephony.SMS_DELIVER";
+
     // 默认短信应用
     private String defaultSmsApplication;
+    // SmsReceiver
+    private SmsReceiver smsReceiver;
 
     @Nullable
     @Override
@@ -33,12 +40,22 @@ public class MessageFragment extends Fragment {
 
         // 请求变更默认短信应用
         this.requestToBeDefaultSmsApplication();
+        // 注册广播接收器
+        this.registerBroadcastReceiver();
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
         this.recoverDefaultSmsApplication();
+    }
+
+    // 注册广播接收器
+    private void registerBroadcastReceiver() {
+        this.smsReceiver = new SmsReceiver();
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(MessageFragment.ACTION_SMS_DELIVER);
+        getActivity().registerReceiver(this.smsReceiver, intentFilter);
     }
 
     // 请求成为默认短信应用
