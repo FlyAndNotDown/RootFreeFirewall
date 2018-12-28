@@ -12,6 +12,7 @@ import android.telephony.SmsMessage;
 import com.nuaa.is.rootfreefirewall.model.Phone;
 import com.nuaa.is.rootfreefirewall.model.SandboxSms;
 import com.nuaa.is.rootfreefirewall.util.ConfigUtil;
+import com.nuaa.is.rootfreefirewall.view.RFFApplication;
 import com.nuaa.is.rootfreefirewall.view.adapter.MessageSandboxAdapter;
 
 import java.io.IOException;
@@ -33,36 +34,17 @@ public class SmsReceiver extends BroadcastReceiver {
     // default value
     private static final int DEFAULT_WARNING_NUM = 20;
 
-    // Context
-    Context context;
-    // 拦截数据库
-    private List<Phone> phones;
-    // 短信沙盒数据、适配器
-    private List<SandboxSms> sandboxSmsList;
-    private MessageSandboxAdapter messageSandboxAdapter;
-
-    // 危险举报数量
-    private int warningNum;
-
-    public SmsReceiver(Context context, List<Phone> phones, List<SandboxSms> sandboxSmsList, MessageSandboxAdapter messageSandboxAdapter) {
-        this.context = context;
-        this.phones = phones;
-        this.sandboxSmsList = sandboxSmsList;
-        this.messageSandboxAdapter = messageSandboxAdapter;
-
-        try {
-            this.warningNum = ConfigUtil.getJSONConfig(this.context, ConfigUtil.CONFIG_PATH__SMS).getInteger("warningNum");
-        } catch (IOException e) {
-            e.printStackTrace();
-            Log.e(SmsReceiver.TAG, "get a IO exception");
-            this.warningNum = SmsReceiver.DEFAULT_WARNING_NUM;
-        }
-    }
 
     @Override
     public void onReceive(Context context, Intent intent) {
         // 日志
         Log.i(SmsReceiver.TAG, "enter onReceive()");
+
+        RFFApplication rffApplication = (RFFApplication) context.getApplicationContext();
+        List<Phone> phones = rffApplication.getPhones();
+        List<SandboxSms> sandboxSmsList = rffApplication.getSandboxSmsList();
+        MessageSandboxAdapter messageSandboxAdapter = rffApplication.getMessageSandboxAdapter();
+        int warningNum = rffApplication.getWarningNum();
 
         try {
             // 如果收到了新的短信
@@ -90,8 +72,8 @@ public class SmsReceiver extends BroadcastReceiver {
 
                         // 判断是否在禁止名单之列
                         boolean found = false;
-                        for (Phone phone : this.phones) {
-                            if (phone.getNumber().equals(phoneNumber) && phone.getBlockNum() >= this.warningNum) {
+                        for (Phone phone : phones) {
+                            if (phone.getNumber().equals(phoneNumber) && phone.getBlockNum() >= warningNum) {
                                 found = true;
                                 break;
                             }

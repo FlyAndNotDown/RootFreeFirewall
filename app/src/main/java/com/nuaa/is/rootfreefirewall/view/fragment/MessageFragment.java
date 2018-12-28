@@ -22,6 +22,7 @@ import com.nuaa.is.rootfreefirewall.message.SmsReceiver;
 import com.nuaa.is.rootfreefirewall.model.Phone;
 import com.nuaa.is.rootfreefirewall.model.SandboxSms;
 import com.nuaa.is.rootfreefirewall.util.SmsAbortDatabaseUtil;
+import com.nuaa.is.rootfreefirewall.view.RFFApplication;
 import com.nuaa.is.rootfreefirewall.view.adapter.MessageSandboxAdapter;
 
 import java.io.IOException;
@@ -262,12 +263,12 @@ public class MessageFragment extends Fragment {
 
     // 注册广播接收器
     private void registerBroadcastReceiver() {
-        this.smsReceiver = new SmsReceiver(
-                getActivity(),
-                this.phones,
-                this.sandboxSmsList,
-                this.messageSandboxAdapter
-        );
+        RFFApplication rffApplication = (RFFApplication) getActivity().getApplication();
+        rffApplication.setPhones(this.phones);
+        rffApplication.setMessageSandboxAdapter(this.messageSandboxAdapter);
+        rffApplication.setSandboxSmsList(this.sandboxSmsList);
+        rffApplication.setWarningNum(20);
+        this.smsReceiver = new SmsReceiver();
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(MessageFragment.ACTION_SMS_DELIVER);
         getActivity().registerReceiver(this.smsReceiver, intentFilter);
