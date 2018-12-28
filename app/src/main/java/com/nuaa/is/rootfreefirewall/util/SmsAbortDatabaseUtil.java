@@ -14,6 +14,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+
 /**
  * 短信拦截数据库工具
  */
@@ -22,6 +27,13 @@ public class SmsAbortDatabaseUtil {
     // server config 位置
     private static final String SERVER_CONFIG_PATH = "config/server.json";
     private static final String SERVER_CONFIG__HOST_KEY = "host";
+
+    // sms config 位置
+    private static final String SMS_CONFIG_PATH = "config/sms.json";
+    private static final String SMS_CONFIG__WARNING_NUM_KEY = "warningNum";
+
+    // default
+    private static final int DEFAULT_WARNIN_NUM = 20;
 
     // RESTful API 地址
     private static final String RESTFUL_API_URL = "/request/rff/sms/phone";
@@ -112,5 +124,30 @@ public class SmsAbortDatabaseUtil {
                 Log.e(SmsAbortDatabaseUtil.TAG, "get a IO exception");
             }
         }
+    }
+
+    // 获取网络数据库
+    public static void getAbortDatabaseByNetwork(Context context, Callback callback) {
+        // 获取 warningNum
+        int warningNum;
+        try {
+            warningNum = ConfigUtil.getJSONConfig(context, SmsAbortDatabaseUtil.SMS_CONFIG_PATH)
+                .getInteger(SmsAbortDatabaseUtil.SMS_CONFIG__WARNING_NUM_KEY);
+        } catch (IOException e) {
+            e.printStackTrace();
+            Log.e(SmsAbortDatabaseUtil.TAG, "get a IO exception");
+            warningNum = SmsAbortDatabaseUtil.DEFAULT_WARNIN_NUM;
+        }
+        OkHttpClient okHttpClient = new OkHttpClient();
+        final Request request = new Request.Builder()
+                .url(
+                        SmsAbortDatabaseUtil.getFullRESTfulAPIAddress(context) +
+                                "?type=numbers" +
+                                "&warningNum=" + warningNum
+                )
+                .get()
+                .build();
+        Call call = okHttpClient.newCall(request);
+        call.enqueue(callback);
     }
 }
