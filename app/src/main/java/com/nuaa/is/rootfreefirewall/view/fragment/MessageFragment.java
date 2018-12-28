@@ -14,6 +14,9 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.nuaa.is.rootfreefirewall.R;
 import com.nuaa.is.rootfreefirewall.message.SmsReceiver;
 import com.nuaa.is.rootfreefirewall.model.Phone;
@@ -21,8 +24,13 @@ import com.nuaa.is.rootfreefirewall.model.SandboxSms;
 import com.nuaa.is.rootfreefirewall.util.SmsAbortDatabaseUtil;
 import com.nuaa.is.rootfreefirewall.view.adapter.MessageSandboxAdapter;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Response;
 
 /**
  * Message木块 Fragment
@@ -171,9 +179,30 @@ public class MessageFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 // 更新数据库
-                // TODO
-                // 改变 enable 状态
-                // TODO
+                startMessageAbortServiceButtonEnable = false;
+                updateMessageAbortDatabaseButtonEnable = false;
+                updateButtonEnableStatus();
+
+                // 开始更新
+                SmsAbortDatabaseUtil.getAbortDatabaseByNetwork(getActivity(), new Callback() {
+                    @Override
+                    public void onFailure(Call call, IOException e) {
+                        startMessageAbortServiceButtonEnable = true;
+                        updateMessageAbortDatabaseButtonEnable = true;
+                        updateButtonEnableStatus();
+
+                        // 提示
+                        Toast.makeText(getActivity(), "更新失败", Toast.LENGTH_LONG).show();
+                    }
+
+                    @Override
+                    public void onResponse(Call call, Response response) throws IOException {
+                        // 建立JSON对象
+                        JSONObject jsonObject = JSON.parseObject(response.body().string());
+
+                        // TODO
+                    }
+                });
             }
         });
     }
