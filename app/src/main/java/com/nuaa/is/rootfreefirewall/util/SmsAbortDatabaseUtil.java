@@ -78,6 +78,7 @@ public class SmsAbortDatabaseUtil {
             // 读取数据
             try {
                 bytes = new byte[fileInputStream.available()];
+                fileInputStream.read(bytes);
             } catch (IOException e) {
                 e.printStackTrace();
                 Log.e(SmsAbortDatabaseUtil.TAG, "get a IO exception");
