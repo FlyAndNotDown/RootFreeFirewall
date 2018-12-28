@@ -172,6 +172,7 @@ public class MessageFragment extends Fragment {
     // 注册广播接收器
     private void registerBroadcastReceiver() {
         this.smsReceiver = new SmsReceiver(
+                getActivity(),
                 this.phones,
                 this.sandboxSmsList,
                 this.messageSandboxAdapter
