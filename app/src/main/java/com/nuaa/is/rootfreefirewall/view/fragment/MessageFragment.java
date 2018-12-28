@@ -144,6 +144,7 @@ public class MessageFragment extends Fragment {
                 startMessageAbortService();
                 // 改变 enable 状态
                 startMessageAbortServiceButtonEnable = false;
+                updateMessageAbortDatabaseButtonEnable = false;
                 updateButtonEnableStatus();
             }
         });
