@@ -9,6 +9,7 @@
 
     <string name="fragment_message__update_message_abort_database_button__text">升级拦截数据库</string>
     <string name="fragment_message__start_message_abort_service_button__text">开启短信拦截服务</string>
+    <string name="fragment_message__start_message_abort_service_button__disabled_text">退出应用以关闭服务</string>
 
     <string name="fragment_message__sandbox_text_view__text">短信隔离区</string>
 

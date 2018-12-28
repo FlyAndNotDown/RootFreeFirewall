@@ -40,6 +40,10 @@ public class MessageFragment extends Fragment {
     private Button startMessageAbortServiceButton;
     private ListView messageSandboxListView;
 
+    // 按钮 enable 状态
+    private boolean updateMessageAbortDatabaseButtonEnable = true;
+    private boolean startMessageAbortServiceButtonEnable = true;
+
     // 沙箱短信信息
     private List<SandboxSms> sandboxSmsList;
     // 适配器
@@ -55,12 +59,10 @@ public class MessageFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+        // 更新按钮 enable 状态
+        this.updateButtonEnableStatus();
         // 初始化数据
         this.initDatas();
-        // 请求变更默认短信应用
-        this.requestToBeDefaultSmsApplication();
-        // 注册广播接收器
-        this.registerBroadcastReceiver();
         // 获取 UI 组件
         this.getUIComponent();
         // 设置适配器
@@ -73,6 +75,25 @@ public class MessageFragment extends Fragment {
     public void onDestroy() {
         super.onDestroy();
         this.recoverDefaultSmsApplication();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        // 更新按钮 enable 状态
+        this.updateButtonEnableStatus();
+    }
+
+    // 更新按钮 enable 状态
+    private void updateButtonEnableStatus() {
+        this.updateMessageAbortDatabaseButton.setEnabled(this.updateMessageAbortDatabaseButtonEnable);
+        this.startMessageAbortServiceButton.setEnabled(this.startMessageAbortServiceButtonEnable);
+        this.startMessageAbortServiceButton.setText(
+                this.startMessageAbortServiceButtonEnable ?
+                        R.string.fragment_message__start_message_abort_service_button__text :
+                        R.string.fragment_message__start_message_abort_service_button__disabled_text
+        );
     }
 
     // 初始化数据
@@ -89,7 +110,19 @@ public class MessageFragment extends Fragment {
 
     // 添加组件监听事件
     private void addComponentListener() {
-
+        // 开启短信拦截服务按钮
+        this.startMessageAbortServiceButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // 请求变更默认短信应用
+                requestToBeDefaultSmsApplication();
+                // 注册广播接收器
+                registerBroadcastReceiver();
+                // 改变按钮 enable 状态，改变文字
+                startMessageAbortServiceButtonEnable = false;
+                startMessageAbortServiceButton.setText(R.string.fragment_message__start_message_abort_service_button__disabled_text);
+            }
+        });
     }
 
     // 设置适配器
