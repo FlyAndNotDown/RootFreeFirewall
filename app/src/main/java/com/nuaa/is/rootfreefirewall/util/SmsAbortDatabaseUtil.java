@@ -54,7 +54,7 @@ public class SmsAbortDatabaseUtil {
         }
         return jsonObject == null ?
                 "" :
-                SmsAbortDatabaseUtil.RESTFUL_API_URL + jsonObject.getString(SmsAbortDatabaseUtil.SERVER_CONFIG__HOST_KEY);
+                jsonObject.getString(SmsAbortDatabaseUtil.SERVER_CONFIG__HOST_KEY) + SmsAbortDatabaseUtil.RESTFUL_API_URL;
     }
 
     // 获取信息
