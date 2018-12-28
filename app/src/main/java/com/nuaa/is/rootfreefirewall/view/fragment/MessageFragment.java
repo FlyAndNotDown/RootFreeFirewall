@@ -30,6 +30,12 @@ public class MessageFragment extends Fragment {
     // Action
     private static final String ACTION_SMS_DELIVER = "android.provider.Telephony.SMS_DELIVER";
 
+    // request code
+    private static final int REQUEST_CODE__CHANGE_DEFAULT_SMS_APPLICATION = 0xf5;
+
+    // 是否是默认短信应用
+    private boolean isDefaultSmsApplication;
+
     // 默认短信应用
     private String defaultSmsApplication;
     // SmsReceiver
@@ -59,8 +65,6 @@ public class MessageFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        // 更新按钮 enable 状态
-        this.updateButtonEnableStatus();
         // 初始化数据
         this.initDatas();
         // 获取 UI 组件
@@ -81,19 +85,41 @@ public class MessageFragment extends Fragment {
     public void onResume() {
         super.onResume();
 
-        // 更新按钮 enable 状态
+//        // 更新按钮 enable 状态
         this.updateButtonEnableStatus();
     }
 
-    // 更新按钮 enable 状态
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        // 根据 REQUEST_CODE 进行判断
+        switch (requestCode) {
+            case REQUEST_CODE__CHANGE_DEFAULT_SMS_APPLICATION:
+                if (resultCode == getActivity().RESULT_OK) {
+                    this.isDefaultSmsApplication = true;
+                    // 注册广播接收器
+                    registerBroadcastReceiver();
+                    // 改变按钮 enable 状态，改变文字
+                    startMessageAbortServiceButtonEnable = false;
+                    startMessageAbortServiceButton.setText(R.string.fragment_message__start_message_abort_service_button__disabled_text);
+                } else {
+                    this.isDefaultSmsApplication = false;
+                    // 改变按钮 enable 状态
+                    startMessageAbortServiceButtonEnable = true;
+                }
+                // 更新按钮状态
+                this.updateButtonEnableStatus();
+                break;
+            default:
+                break;
+        }
+    }
+
+    // 更新按钮状态
     private void updateButtonEnableStatus() {
-        this.updateMessageAbortDatabaseButton.setEnabled(this.updateMessageAbortDatabaseButtonEnable);
         this.startMessageAbortServiceButton.setEnabled(this.startMessageAbortServiceButtonEnable);
-        this.startMessageAbortServiceButton.setText(
-                this.startMessageAbortServiceButtonEnable ?
-                        R.string.fragment_message__start_message_abort_service_button__text :
-                        R.string.fragment_message__start_message_abort_service_button__disabled_text
-        );
+        this.updateMessageAbortDatabaseButton.setEnabled(this.updateMessageAbortDatabaseButtonEnable);
     }
 
     // 初始化数据
@@ -114,13 +140,11 @@ public class MessageFragment extends Fragment {
         this.startMessageAbortServiceButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // 请求变更默认短信应用
-                requestToBeDefaultSmsApplication();
-                // 注册广播接收器
-                registerBroadcastReceiver();
-                // 改变按钮 enable 状态，改变文字
+                // 开启服务
+                startMessageAbortService();
+                // 改变 enable 状态
                 startMessageAbortServiceButtonEnable = false;
-                startMessageAbortServiceButton.setText(R.string.fragment_message__start_message_abort_service_button__disabled_text);
+                updateButtonEnableStatus();
             }
         });
     }
@@ -140,8 +164,8 @@ public class MessageFragment extends Fragment {
         getActivity().registerReceiver(this.smsReceiver, intentFilter);
     }
 
-    // 请求成为默认短信应用
-    private void requestToBeDefaultSmsApplication() {
+    // 开启短信拦截服务
+    private void startMessageAbortService() {
         // Toast 提示
         Toast.makeText(
                 getActivity(),
@@ -151,11 +175,18 @@ public class MessageFragment extends Fragment {
 
         // 保存原来的默认短信应用信息
         this.defaultSmsApplication = Telephony.Sms.getDefaultSmsPackage(getActivity());
+        // 更新状态
+        this.isDefaultSmsApplication = this.defaultSmsApplication.equals(getActivity().getPackageName());
 
-        // 向用户请求将本应用设置成默认短信应用
-        Intent intent = new Intent(Telephony.Sms.Intents.ACTION_CHANGE_DEFAULT);
-        intent.putExtra(Telephony.Sms.Intents.EXTRA_PACKAGE_NAME, getActivity().getPackageName());
-        startActivity(intent);
+        if (this.isDefaultSmsApplication) {
+            // 如果已经是默认应用了
+            this.onActivityResult(REQUEST_CODE__CHANGE_DEFAULT_SMS_APPLICATION, getActivity().RESULT_OK, new Intent());
+        } else {
+            // 如果不是默认应用，向用户请求将本应用设置成默认短信应用
+            Intent intent = new Intent(Telephony.Sms.Intents.ACTION_CHANGE_DEFAULT);
+            intent.putExtra(Telephony.Sms.Intents.EXTRA_PACKAGE_NAME, getActivity().getPackageName());
+            startActivityForResult(intent, REQUEST_CODE__CHANGE_DEFAULT_SMS_APPLICATION);
+        }
     }
 
     // 还原成原来的短信应用
