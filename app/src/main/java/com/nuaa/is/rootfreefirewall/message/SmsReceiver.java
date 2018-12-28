@@ -81,7 +81,7 @@ public class SmsReceiver extends BroadcastReceiver {
 
                         if (found) {
                             // 如果被ban了
-                            sandboxSmsList.add(new SandboxSms(
+                            sandboxSmsList.add(0, new SandboxSms(
                                     phoneNumber,
                                     "危险",
                                     simpleDateFormat.format(formatedDate),
