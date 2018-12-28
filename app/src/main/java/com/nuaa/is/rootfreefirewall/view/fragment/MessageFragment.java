@@ -165,6 +165,17 @@ public class MessageFragment extends Fragment {
                 updateButtonEnableStatus();
             }
         });
+
+        // 更新短信拦截数据库按钮
+        this.updateMessageAbortDatabaseButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // 更新数据库
+                // TODO
+                // 改变 enable 状态
+                // TODO
+            }
+        });
     }
 
     // 设置适配器
