@@ -94,6 +94,7 @@ public class MessageFragment extends Fragment {
     public void onDestroy() {
         super.onDestroy();
         this.recoverDefaultSmsApplication();
+        this.saveSmsAbortDatabase();
     }
 
     @Override
@@ -200,7 +201,35 @@ public class MessageFragment extends Fragment {
                         // 建立JSON对象
                         JSONObject jsonObject = JSON.parseObject(response.body().string());
 
-                        // TODO
+                        // 拆分
+                        List<Phone> networkPhones = new ArrayList<>();
+                        JSONArray jsonArray = jsonObject.getJSONArray("numbers");
+                        for (int i = 0; i < jsonArray.size(); i++) {
+                            JSONObject object = (JSONObject) jsonArray.get(i);
+                            networkPhones.add(new Phone(
+                                    object.getString("number"),
+                                    object.getInteger("blockNum")
+                            ));
+                        }
+
+                        // 合并两者
+                        for (int i = 0; i < networkPhones.size(); i++) {
+                            boolean found = false;
+                            for (int j = 0; j < phones.size(); j++) {
+                                if (networkPhones.get(i).getNumber().equals(phones.get(j).getNumber())) {
+                                    found = true;
+                                    if (networkPhones.get(i).getBlockNum() != phones.get(j).getBlockNum()) {
+                                        phones.get(j).setBlockNum(networkPhones.get(i).getBlockNum());
+                                    }
+                                }
+                            }
+                            if (!found) {
+                                phones.add(new Phone(
+                                        networkPhones.get(i).getNumber(),
+                                        networkPhones.get(i).getBlockNum()
+                                ));
+                            }
+                        }
                     }
                 });
             }
