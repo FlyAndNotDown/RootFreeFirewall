@@ -226,22 +226,12 @@ public class MessageFragment extends Fragment {
                         }
 
                         // 合并两者
-                        for (int i = 0; i < networkPhones.size(); i++) {
-                            boolean found = false;
-                            for (int j = 0; j < phones.size(); j++) {
-                                if (networkPhones.get(i).getNumber().equals(phones.get(j).getNumber())) {
-                                    found = true;
-                                    if (networkPhones.get(i).getBlockNum() != phones.get(j).getBlockNum()) {
-                                        phones.get(j).setBlockNum(networkPhones.get(i).getBlockNum());
-                                    }
-                                }
-                            }
-                            if (!found) {
-                                phones.add(new Phone(
-                                        networkPhones.get(i).getNumber(),
-                                        networkPhones.get(i).getBlockNum()
-                                ));
-                            }
+                        phones.clear();
+                        for (Phone networkPhone : networkPhones) {
+                            phones.add(new Phone(
+                                    networkPhone.getNumber(),
+                                    networkPhone.getBlockNum()
+                            ));
                         }
 
                         getActivity().runOnUiThread(new Runnable() {
