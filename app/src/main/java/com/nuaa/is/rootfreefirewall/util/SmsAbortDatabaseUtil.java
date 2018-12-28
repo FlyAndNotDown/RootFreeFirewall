@@ -3,6 +3,7 @@ package com.nuaa.is.rootfreefirewall.util;
 import android.content.Context;
 import android.util.Log;
 
+import com.alibaba.fastjson.JSONObject;
 import com.nuaa.is.rootfreefirewall.model.Phone;
 
 import java.io.FileInputStream;
@@ -18,10 +19,31 @@ import java.util.StringTokenizer;
  */
 public class SmsAbortDatabaseUtil {
 
+    // server config 位置
+    private static final String SERVER_CONFIG_PATH = "config/server.json";
+    private static final String SERVER_CONFIG__HOST_KEY = "host";
+
+    // RESTful API 地址
+    private static final String RESTFUL_API_URL = "/request/rff/sms/phone";
+
     // TAG
     private static String TAG = "RFF-SmsAbortDatabaseUtil";
     // 文件名
     private static String SAVE_FILE_NAME = "smsAbortDatabase";
+
+    // 获取完整 RESTful API 地址
+    private static String getFullRESTfulAPIAddress(Context context) {
+        JSONObject jsonObject = null;
+        try {
+            jsonObject = ConfigUtil.getJSONConfig(context, SmsAbortDatabaseUtil.SERVER_CONFIG_PATH);
+        } catch (IOException e) {
+            e.printStackTrace();
+            Log.e(SmsAbortDatabaseUtil.TAG, "Can't parse config to JSON object");
+        }
+        return jsonObject == null ?
+                "" :
+                SmsAbortDatabaseUtil.RESTFUL_API_URL + jsonObject.getString(SmsAbortDatabaseUtil.SERVER_CONFIG__HOST_KEY);
+    }
 
     // 获取信息
     public static List<Phone> getPhoneList(Context context) {
