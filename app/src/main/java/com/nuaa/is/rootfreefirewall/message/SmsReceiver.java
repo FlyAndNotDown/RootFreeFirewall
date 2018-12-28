@@ -84,7 +84,7 @@ public class SmsReceiver extends BroadcastReceiver {
                             sandboxSmsList.add(new SandboxSms(
                                     phoneNumber,
                                     "危险",
-                                    formatedDate.toString(),
+                                    simpleDateFormat.format(formatedDate),
                                     body
                             ));
                             messageSandboxAdapter.notifyDataSetInvalidated();
