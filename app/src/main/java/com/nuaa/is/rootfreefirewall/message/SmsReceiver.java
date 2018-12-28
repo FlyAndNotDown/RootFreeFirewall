@@ -65,7 +65,7 @@ public class SmsReceiver extends BroadcastReceiver {
                         String phoneNumber = smsMessages[0].getOriginatingAddress();
                         long date = smsMessages[0].getTimestampMillis();
                         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM月dd日 HH:mm");
-                        Date formatedDate = new Date(date * 1000);
+                        Date formatedDate = new Date(date);
 
                         // 日志
                         Log.i(SmsReceiver.TAG, "get a message from " + phoneNumber + ":\n" + body);
