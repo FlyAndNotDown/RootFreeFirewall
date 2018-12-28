@@ -21,6 +21,7 @@ import com.nuaa.is.rootfreefirewall.R;
 import com.nuaa.is.rootfreefirewall.message.SmsReceiver;
 import com.nuaa.is.rootfreefirewall.model.Phone;
 import com.nuaa.is.rootfreefirewall.model.SandboxSms;
+import com.nuaa.is.rootfreefirewall.util.SandboxSmsUtil;
 import com.nuaa.is.rootfreefirewall.util.SmsAbortDatabaseUtil;
 import com.nuaa.is.rootfreefirewall.view.RFFApplication;
 import com.nuaa.is.rootfreefirewall.view.adapter.MessageSandboxAdapter;
@@ -81,8 +82,8 @@ public class MessageFragment extends Fragment {
 
         // 载入短信拦截数据库
         this.loadSmsAbortDatabase();
-        // 初始化数据
-        this.initDatas();
+        // 载入拦截的短信信息
+        this.loadSandboxSms();
         // 获取 UI 组件
         this.getUIComponent();
         // 设置适配器
@@ -95,6 +96,7 @@ public class MessageFragment extends Fragment {
     public void onDestroy() {
         super.onDestroy();
         this.saveSmsAbortDatabase();
+        this.saveSandboxSms();
         this.recoverDefaultSmsApplication();
     }
 
@@ -143,15 +145,20 @@ public class MessageFragment extends Fragment {
         SmsAbortDatabaseUtil.save(getActivity(), this.phones);
     }
 
+    // 载入拦截短信
+    private void loadSandboxSms() {
+        this.sandboxSmsList = SandboxSmsUtil.getSandboxSmsList(getActivity());
+    }
+
+    // 保存拦截短信
+    private void saveSandboxSms() {
+        SandboxSmsUtil.save(getActivity(), this.sandboxSmsList);
+    }
+
     // 更新按钮状态
     private void updateButtonEnableStatus() {
         this.startMessageAbortServiceButton.setEnabled(this.startMessageAbortServiceButtonEnable);
         this.updateMessageAbortDatabaseButton.setEnabled(this.updateMessageAbortDatabaseButtonEnable);
-    }
-
-    // 初始化数据
-    private void initDatas() {
-        this.sandboxSmsList = new ArrayList<>();
     }
 
     // 获取 UI 组件
