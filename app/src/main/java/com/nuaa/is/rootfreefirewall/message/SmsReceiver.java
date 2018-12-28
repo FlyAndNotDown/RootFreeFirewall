@@ -105,6 +105,7 @@ public class SmsReceiver extends BroadcastReceiver {
                                     formatedDate.toString(),
                                     body
                             ));
+                            messageSandboxAdapter.notifyDataSetInvalidated();
                         } else {
                             // 如果没有被 ban
                             // 写入短信
