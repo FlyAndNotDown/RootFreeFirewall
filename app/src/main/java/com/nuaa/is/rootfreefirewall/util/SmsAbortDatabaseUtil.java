@@ -41,7 +41,7 @@ public class SmsAbortDatabaseUtil {
     // TAG
     private static String TAG = "RFF-SmsAbortDatabaseUtil";
     // 文件名
-    private static String SAVE_FILE_NAME = "smsAbortDatabase";
+    private static String SAVE_FILE_NAME = "smsAbortDb";
 
     // 获取完整 RESTful API 地址
     private static String getFullRESTfulAPIAddress(Context context) {

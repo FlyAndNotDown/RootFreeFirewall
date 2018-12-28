@@ -93,8 +93,8 @@ public class MessageFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        this.recoverDefaultSmsApplication();
         this.saveSmsAbortDatabase();
+        this.recoverDefaultSmsApplication();
     }
 
     @Override
@@ -188,12 +188,17 @@ public class MessageFragment extends Fragment {
                 SmsAbortDatabaseUtil.getAbortDatabaseByNetwork(getActivity(), new Callback() {
                     @Override
                     public void onFailure(Call call, IOException e) {
-                        startMessageAbortServiceButtonEnable = true;
-                        updateMessageAbortDatabaseButtonEnable = true;
-                        updateButtonEnableStatus();
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                startMessageAbortServiceButtonEnable = true;
+                                updateMessageAbortDatabaseButtonEnable = true;
+                                updateButtonEnableStatus();
 
-                        // 提示
-                        Toast.makeText(getActivity(), "更新失败", Toast.LENGTH_LONG).show();
+                                // 提示
+                                Toast.makeText(getActivity(), "更新失败", Toast.LENGTH_LONG).show();
+                            }
+                        });
                     }
 
                     @Override
@@ -230,6 +235,18 @@ public class MessageFragment extends Fragment {
                                 ));
                             }
                         }
+
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                startMessageAbortServiceButtonEnable = true;
+                                updateMessageAbortDatabaseButtonEnable = true;
+                                updateButtonEnableStatus();
+
+                                // 提示
+                                Toast.makeText(getActivity(), "更新成功", Toast.LENGTH_LONG).show();
+                            }
+                        });
                     }
                 });
             }
