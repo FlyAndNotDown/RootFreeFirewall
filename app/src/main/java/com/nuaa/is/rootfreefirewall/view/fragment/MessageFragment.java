@@ -128,6 +128,11 @@ public class MessageFragment extends Fragment {
         this.phones = SmsAbortDatabaseUtil.getPhoneList(getActivity());
     }
 
+    // 存储短信拦截数据库
+    private void saveSmsAbortDatabase() {
+        SmsAbortDatabaseUtil.save(getActivity(), this.phones);
+    }
+
     // 更新按钮状态
     private void updateButtonEnableStatus() {
         this.startMessageAbortServiceButton.setEnabled(this.startMessageAbortServiceButtonEnable);
