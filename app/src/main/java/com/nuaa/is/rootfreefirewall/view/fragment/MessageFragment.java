@@ -16,7 +16,9 @@ import android.widget.Toast;
 
 import com.nuaa.is.rootfreefirewall.R;
 import com.nuaa.is.rootfreefirewall.message.SmsReceiver;
+import com.nuaa.is.rootfreefirewall.model.Phone;
 import com.nuaa.is.rootfreefirewall.model.SandboxSms;
+import com.nuaa.is.rootfreefirewall.util.SmsAbortDatabaseUtil;
 import com.nuaa.is.rootfreefirewall.view.adapter.MessageSandboxAdapter;
 
 import java.util.ArrayList;
@@ -55,6 +57,9 @@ public class MessageFragment extends Fragment {
     // 适配器
     private MessageSandboxAdapter messageSandboxAdapter;
 
+    // 短信拦截数据库
+    private List<Phone> phones;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -65,6 +70,8 @@ public class MessageFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+        // 载入短信拦截数据库
+        this.loadSmsAbortDatabase();
         // 初始化数据
         this.initDatas();
         // 获取 UI 组件
@@ -85,7 +92,7 @@ public class MessageFragment extends Fragment {
     public void onResume() {
         super.onResume();
 
-//        // 更新按钮 enable 状态
+        // 更新按钮 enable 状态
         this.updateButtonEnableStatus();
     }
 
@@ -114,6 +121,11 @@ public class MessageFragment extends Fragment {
             default:
                 break;
         }
+    }
+
+    // 载入短信拦截数据库
+    private void loadSmsAbortDatabase() {
+        this.phones = SmsAbortDatabaseUtil.getPhoneList(getActivity());
     }
 
     // 更新按钮状态
@@ -159,7 +171,11 @@ public class MessageFragment extends Fragment {
 
     // 注册广播接收器
     private void registerBroadcastReceiver() {
-        this.smsReceiver = new SmsReceiver();
+        this.smsReceiver = new SmsReceiver(
+                this.phones,
+                this.sandboxSmsList,
+                this.messageSandboxAdapter
+        );
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(MessageFragment.ACTION_SMS_DELIVER);
         getActivity().registerReceiver(this.smsReceiver, intentFilter);

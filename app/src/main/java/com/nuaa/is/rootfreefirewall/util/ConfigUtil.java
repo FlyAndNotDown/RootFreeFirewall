@@ -17,6 +17,10 @@ public class ConfigUtil {
     // TAG
     private static final String TAG = "RFF-ConfigUtil";
 
+    // config path
+    public static final String CONFIG_PATH__SERVER = "config/server.json";
+    public static final String CONFIG_PATH__SMS = "config/sms.json";
+
     // buffer size
     private static final int BUFFER_SIZE = 1024;
 
