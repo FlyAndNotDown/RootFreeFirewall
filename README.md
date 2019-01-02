@@ -56,7 +56,7 @@
     <img src="./document/show-2.png" width="45%" alt="Show-Picture-2"/>
 <div/>
 
-# 🙄部署/私有化指南
+# 🙄部署/私有化指北
 `todo`
 
 # 😘关于
