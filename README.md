@@ -50,4 +50,16 @@
 ## `Release`版本
 如果你想尝鲜，自己使用我们预编译的二进制文件，请看这里：[RFF-Release](https://github.com/FlyAndNotDown/RootFreeFirewall/releases)
 
-# TODO!!!
+# 🏃运行展示
+<div>
+    <img src="./document/show-1.png" width="45%" alt="Show-Picture-1"/>
+    <img src="./document/show-2.png" width="45%" alt="Show-Picture-2"/>
+<div/>
+
+# 😘关于
+* 作案团伙：`蛋黄酱`、`鲳鱼酱`、`徐酱`
+* 仓库拥有者：`蛋黄酱`
+* 学校：`NUAA`
+* 课程：`2018 信息安全综合实验`
+
+觉得不错的话点一个小星星🌟哦！
