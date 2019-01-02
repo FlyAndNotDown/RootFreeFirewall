@@ -56,6 +56,9 @@
     <img src="./document/show-2.png" width="45%" alt="Show-Picture-2"/>
 <div/>
 
+# 🙄部署/私有化指南
+`todo`
+
 # 😘关于
 * 作案团伙：`蛋黄酱`、`鲳鱼酱`、`徐酱`
 * 仓库拥有者：`蛋黄酱`
