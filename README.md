@@ -42,6 +42,12 @@
 这一想法需要一个服务器的实现，我们实现了一个简易的版本，仓库在这里，后面也会说到如何部署：[github-FlyAndNotDown-RffSmsInterceptorBackend](https://github.com/FlyAndNotDown/rff-sms-interceptor-backend)以及配合这个项目使用
 
 # 💻编译/发行版
+## 自己编译`Debug`版
+你只需要安装`Android Studio`，然后克隆我的项目，将其导入`Android Studio`，然后`build`即可在你手机或者你的虚拟机上看到效果，建议使用`Android 7.0`及以上版本的手机进行调试。
 
+如果编译不成功，你需要检查你自己的`gradle`版本和`ADK`环境，如果还是不行可以自行修改`build.gradle`文件，降低`API`版本。
+
+## `Release`版本
+如果你想尝鲜，自己使用我们预编译的二进制文件，请看这里：[RFF-Release](https://github.com/FlyAndNotDown/RootFreeFirewall/releases)
 
 # TODO!!!
