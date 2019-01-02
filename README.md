@@ -57,7 +57,17 @@
 <div/>
 
 # 🙄部署/私有化指北
-`todo`
+我们在开发过程中，将可能会影响到部署实例运行的部分都移动到了可以快速修改的`asserts`部分，以`json`配置文件的格式存在，目录在：
+
+```
+/app/src/main/asserts/config
+```
+
+目录下有两个配置文件，分别表示服务器配置和短信配置。
+
+如果你需要部署自己的服务器应用而不是使用我已经部署好的范例后端(后端仓库在这里：[github-FlyAndNotDown-RffSmsInterceptorBackend](https://github.com/FlyAndNotDown/rff-sms-interceptor-backend))，那么你需要将你部署后的服务器主机名填入`server.json`中，很简单，你看看就知道，后端的部署可以参考后端项目中的`README.md`，接口信息在`WiKi`面板可以查看。
+
+短信配置主要是危险手机号的被举报次数，超过这个举报次数的手机号发送的短信会被拦截下来，并且提示为危险短信。
 
 # 😘关于
 * 作案团伙：`蛋黄酱`、`鲳鱼酱`、`徐酱`
